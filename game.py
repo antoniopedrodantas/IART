@@ -6,11 +6,11 @@ pygame.get_init()
 
 pygame.display.set_caption("Box World")
 
-x = 50
-y = 50
+x = 20
+y = 20
 width = 40
 height = 60
-vel = 5
+vel = 10
 
 run = True
 while run:
