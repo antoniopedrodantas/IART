@@ -10,9 +10,7 @@ minimum_x = 342
 # Initializes the window's title, width, and height
 pygame.display.set_caption("Farm Game")
 screen = pygame.display.set_mode((720, 320))
-# Loads the background image
-farm_image = pygame.image.load("farm_sprite.png").convert()
-# Fence Rectangles
+
 fences = (
     pygame.Rect(455, 65, 20, 85),
     pygame.Rect(390, 65, 85, 20),
