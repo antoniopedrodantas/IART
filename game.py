@@ -83,11 +83,6 @@ while run:
         if moved.collidelist(arena) == -1 and box_moved.collidelist(arena) == -1:
             player = moved
 
-            #winning mechanism
-            if player.colliderect(finish):
-                print("YOU WON!")
-                run = False
-
             for box in boxes:
                 #if the player collides any box it moves
                 if player.colliderect(box):
@@ -99,6 +94,11 @@ while run:
                     else:
                         player.x -= movement_player.x
                         player.y -= movement_player.y
+
+            #winning mechanism
+            if player.colliderect(finish):
+                print("YOU WON!")
+                run = False
 
 
 
