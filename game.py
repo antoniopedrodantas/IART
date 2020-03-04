@@ -17,7 +17,7 @@ clock = pygame.time.Clock()
 #player 
 player = pygame.Rect(325, 175, 25, 25)
 
-#box
+#boxes
 boxes = (
     pygame.Rect(175, 150, 25, 25),
     pygame.Rect(200, 175, 25, 25),
@@ -27,17 +27,24 @@ boxes = (
     pygame.Rect(175, 200, 25, 25),
 )
 
+#game floor
+floor = (
+    pygame.Rect(125, 200, 225, 25),
+    pygame.Rect(125, 150, 225, 25),
+    pygame.Rect(125, 175, 225, 25),
+)
+    
+#finish station
 finish = pygame.Rect(100, 175, 25, 25)
 
-
-run = True
 #while loop
+run = True
 while run:
     
     #press delay for increased playability
     pygame.time.delay(90)
 
-    # creates the arena 
+    #arena
     arena = (
         pygame.Rect(75, 125, 300, 25),
         pygame.Rect(75, 125, 25, 125),
@@ -46,7 +53,6 @@ while run:
         pygame.Rect(100, 150, 25, 25),
         pygame.Rect(100, 200, 25, 25)
     )
-
     
     #adds key functionality
     for event in pygame.event.get():
@@ -111,6 +117,12 @@ while run:
     for wall in arena:
         pygame.draw.rect(screen, (0, 255, 0), (wall.x, wall.y, wall.width, wall.height))
 
+    
+    #draws floor
+    for tile in floor:
+        pygame.draw.rect(screen, pygame.Color('pink'), tile)
+    
+
     #draws player
     pygame.draw.rect(screen, pygame.Color('red'), player)
 
@@ -125,8 +137,3 @@ while run:
     clock.tick(60)
 
 pygame.quit()
-
-
-
-
-
