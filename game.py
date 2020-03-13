@@ -37,17 +37,19 @@ boxes = (
 #level2
 boxes = [
     pygame.Rect(125, 125, 25, 25),
-    # pygame.Rect(150, 125, 25, 25),
-    # pygame.Rect(175, 125, 25, 25),
+    pygame.Rect(150, 125, 25, 25),
+    pygame.Rect(175, 125, 25, 25),
     pygame.Rect(200, 125, 25, 25),
     pygame.Rect(150, 150, 25, 25),
     pygame.Rect(200, 150, 25, 25),
+    pygame.Rect(125, 175, 25, 25),
 ]
 
 #iceBoxes
 #level2
 iceBoxes = [
     pygame.Rect(150, 75, 25, 25),
+    pygame.Rect(225, 75, 25, 25),
 ]
 
 
@@ -170,22 +172,21 @@ while run:
             #ice
             for ice in iceBoxes:
                 if player.colliderect(ice):
-                    flag = True
                     ice_moved = ice.move(movement_player.x, movement_player.y)
                     #check when icebox collides
-                    while(ice.collidelist(arena) == -1 and ice.collidelist(boxes) == -1):
+                    while(ice.collidelist(arena) == -1 and ice.collidelist(boxes) == -1 and ice.collidelist(holes) == -1):
                         ice.x += movement_player.x
                         ice.y += movement_player.y
-                        if ice.collidelist(holes):
-                            flag = False
-                            print("yeet")
-                            break
-                    #compensating for last move
-                    if not flag:
+                    
+                    if(ice.collidelist(holes) != -1):
+                        player.x -= movement_player.x
+                        player.y -= movement_player.y
+                    else:
+                        #compensating for last move
                         ice.x -= movement_player.x
                         ice.y -= movement_player.y
-                    player.x -= movement_player.x
-                    player.y -= movement_player.y
+                        player.x -= movement_player.x
+                        player.y -= movement_player.y
 
             del_holes = holes
             del_boxes = boxes
@@ -204,6 +205,7 @@ while run:
 
             #winning mechanism
             if player.colliderect(finish):
+                print("\n")
                 print("YOU WON!")
                 run = False
 
