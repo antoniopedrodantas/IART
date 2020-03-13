@@ -18,21 +18,26 @@ clock = pygame.time.Clock()
 player = pygame.Rect(325, 175, 25, 25)
 
 #boxes
-boxes = (
+boxes = [
     pygame.Rect(175, 150, 25, 25),
     pygame.Rect(200, 175, 25, 25),
     pygame.Rect(225, 200, 25, 25),
     pygame.Rect(125, 150, 25, 25),
     pygame.Rect(150, 175, 25, 25),
     pygame.Rect(175, 200, 25, 25),
-)
+]
+
+#holes
+holes = [
+    pygame.Rect(300, 175, 25, 25),
+]
 
 #game floor
-floor = (
+floor = [
     pygame.Rect(125, 200, 225, 25),
     pygame.Rect(125, 150, 225, 25),
     pygame.Rect(125, 175, 225, 25),
-)
+]
     
 #finish station
 finish = pygame.Rect(100, 175, 25, 25)
@@ -101,6 +106,20 @@ while run:
                         player.x -= movement_player.x
                         player.y -= movement_player.y
 
+            for hole in holes:
+                #if the player collides any box it moves
+                if player.colliderect(hole):
+                    run = False
+
+            del_holes = holes
+            del_boxes = boxes
+
+            for i in del_holes:
+                for k in del_boxes:
+                    if i.colliderect(k):
+                        boxes.remove(k)
+                        holes.remove(i)
+
             #winning mechanism
             if player.colliderect(finish):
                 print("YOU WON!")
@@ -129,6 +148,10 @@ while run:
     #draws box
     for box in boxes:
         pygame.draw.rect(screen, pygame.Color('yellow'), box)
+
+    # #draws holes
+    for hole in holes:
+        pygame.draw.rect(screen, pygame.Color('grey'), hole)
 
     # Update the full Surface to the screen
     pygame.display.flip()

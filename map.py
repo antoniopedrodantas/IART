@@ -12,13 +12,13 @@ pygame.display.set_caption("Farm Game")
 screen = pygame.display.set_mode((720, 320))
 
 fences = (
-    pygame.Rect(455, 65, 20, 85),
-    pygame.Rect(390, 65, 85, 20),
-    pygame.Rect(390, 0, 20, 85),
-    pygame.Rect(395, 0, 240, 20),
-    pygame.Rect(615, 0, 20, 150),
-    pygame.Rect(580, 130, 40, 20),
-    pygame.Rect(455, 130, 80, 20)
+    pygame.Rect(255, 65, 20, 85),
+    pygame.Rect(190, 65, 85, 20),
+    pygame.Rect(290, 0, 20, 85),
+    pygame.Rect(295, 0, 240, 20),
+    pygame.Rect(415, 0, 20, 150),
+    pygame.Rect(380, 130, 40, 20),
+    pygame.Rect(255, 130, 80, 20)
 )
 
 # player coords
