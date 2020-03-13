@@ -44,6 +44,12 @@ boxes = (
     pygame.Rect(200, 150, 25, 25),
 )
 
+#iceBoxes
+#level2
+iceBoxes = (
+    pygame.Rect(150, 75, 25, 25),
+)
+
 
 #game floor
 """
@@ -127,8 +133,13 @@ while run:
     if movement_player.x != 0 or movement_player.y != 0:
         rect = screen.get_rect().inflate(-6, -6)
         moved = player.move(movement_player.x, movement_player.y)
+        
         for box in boxes:
             box_moved = moved
+
+        for ice in iceBoxes:
+            ice_moved = moved
+        
         #if the player is inside the arena he can move
         if moved.collidelist(arena) == -1 and box_moved.collidelist(arena) == -1:
             player = moved
@@ -138,12 +149,26 @@ while run:
                 if player.colliderect(box):
                     box_moved = box.move(movement_player.x, movement_player.y)
                     #if the box collides with the arena or another box it does not move
-                    if box_moved.collidelist(arena) == -1 and box_moved.collidelist(boxes) == -1:
+                    if box_moved.collidelist(arena) == -1 and box_moved.collidelist(boxes) == -1 and box_moved.collidelist(iceBoxes) == -1:
                         box.x += movement_player.x
                         box.y += movement_player.y
                     else:
                         player.x -= movement_player.x
                         player.y -= movement_player.y
+
+            #ice
+            for ice in iceBoxes:
+                if player.colliderect(ice):
+                    ice_moved = ice.move(movement_player.x, movement_player.y)
+                    #check when icebox collides
+                    while(ice.collidelist(arena) == -1 and ice.collidelist(boxes) == -1):
+                        ice.x += movement_player.x
+                        ice.y += movement_player.y
+                    #compensating for last move
+                    ice.x -= movement_player.x
+                    ice.y -= movement_player.y
+                    player.x -= movement_player.x
+                    player.y -= movement_player.y
 
             #winning mechanism
             if player.colliderect(finish):
@@ -173,6 +198,10 @@ while run:
     #draws box
     for box in boxes:
         pygame.draw.rect(screen, pygame.Color('yellow'), box)
+
+    #draws ice
+    for ice in iceBoxes:
+        pygame.draw.rect(screen, pygame.Color(0, 255, 255), ice)
 
     # Update the full Surface to the screen
     pygame.display.flip()
