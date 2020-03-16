@@ -63,6 +63,15 @@ floor = [
 ]
 """
 
+#level2
+floor = [
+    pygame.Rect(75, 75, 200, 25),
+    pygame.Rect(100, 100, 150, 25),
+    pygame.Rect(125, 125, 100, 25),
+    pygame.Rect(100, 150, 150, 25),
+    pygame.Rect(75, 175, 200, 25),
+]
+
 #arena
 """
 #level1
@@ -213,17 +222,18 @@ while run:
 
     screen.fill((0,0,0))
 
-    #draws finish
-    pygame.draw.rect(screen, pygame.Color('blue'), finish)
-
     #draws arena
     for wall in arena:
         pygame.draw.rect(screen, (0, 255, 0), (wall.x, wall.y, wall.width, wall.height))
 
     
-    #draws floor
-    #for tile in floor:
-        #pygame.draw.rect(screen, pygame.Color('pink'), tile)
+   #draws floor
+    for tile in floor:
+        pygame.draw.rect(screen, pygame.Color('pink'), tile)
+
+    
+    #draws finish
+    pygame.draw.rect(screen, pygame.Color('blue'), finish)
     
 
     #draws player
@@ -239,6 +249,7 @@ while run:
     #draws ice
     for ice in iceBoxes:
         pygame.draw.rect(screen, pygame.Color(0, 255, 255), ice)
+
 
     # Update the full Surface to the screen
     pygame.display.flip()
