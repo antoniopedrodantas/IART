@@ -1,6 +1,8 @@
 import pygame
 from sys import exit
 
+from level import *
+
 
 #initializes the screen 500x500
 screen = pygame.display.set_mode((500, 500))
@@ -14,106 +16,8 @@ pygame.display.set_caption("Box World")
 # Creates a clock object to keep track of time
 clock = pygame.time.Clock()
 
-#PLAYER
-#level1
-#player = pygame.Rect(325, 175, 25, 25)
-
-#level2
-player = pygame.Rect(75, 175, 25, 25)
-
-
-#BOXES
-"""
-#level1
-boxes = (
-    pygame.Rect(175, 150, 25, 25),
-    pygame.Rect(200, 175, 25, 25),
-    pygame.Rect(225, 200, 25, 25),
-    pygame.Rect(125, 150, 25, 25),
-    pygame.Rect(150, 175, 25, 25),
-    pygame.Rect(175, 200, 25, 25),
-)
-"""
-#level2
-boxes = [
-    pygame.Rect(125, 125, 25, 25),
-    pygame.Rect(150, 125, 25, 25),
-    pygame.Rect(175, 125, 25, 25),
-    pygame.Rect(200, 125, 25, 25),
-    pygame.Rect(150, 150, 25, 25),
-    pygame.Rect(200, 150, 25, 25),
-    pygame.Rect(125, 175, 25, 25),
-]
-
-#iceBoxes
-#level2
-iceBoxes = [
-    pygame.Rect(150, 75, 25, 25),
-    pygame.Rect(225, 75, 25, 25),
-]
-
-
-#game floor
-"""
-#level1
-floor = [
-    pygame.Rect(125, 200, 225, 25),
-    pygame.Rect(125, 150, 225, 25),
-    pygame.Rect(125, 175, 225, 25),
-]
-"""
-
-#level2
-floor = [
-    pygame.Rect(75, 75, 200, 25),
-    pygame.Rect(100, 100, 150, 25),
-    pygame.Rect(125, 125, 100, 25),
-    pygame.Rect(100, 150, 150, 25),
-    pygame.Rect(75, 175, 200, 25),
-]
-
-#arena
-"""
-#level1
-arena = [
-    pygame.Rect(75, 125, 300, 25),
-    pygame.Rect(75, 125, 25, 125),
-    pygame.Rect(350, 125, 25, 125),
-    pygame.Rect(100, 225, 250, 25),
-    pygame.Rect(100, 150, 25, 25),
-    pygame.Rect(100, 200, 25, 25)
-]
-"""
-#level2
-arena = [
-    pygame.Rect(50, 50, 250, 25),
-    pygame.Rect(50, 75, 25, 25),
-    pygame.Rect(275, 75, 25, 25),
-    pygame.Rect(50, 100, 50, 25),
-    pygame.Rect(250, 100, 50, 25),
-    pygame.Rect(50, 125, 75, 25),
-    pygame.Rect(225, 125, 75, 25),
-    pygame.Rect(50, 150, 50, 25),
-    pygame.Rect(250, 150, 50, 25),
-    pygame.Rect(275, 175, 25, 25),
-    pygame.Rect(50, 175, 25, 25),
-    pygame.Rect(50, 200, 250, 25),
-]
-
-#holes2  
-holes = [
-    pygame.Rect(100, 75 ,25 ,25),
-    pygame.Rect(250, 75 ,25 ,25),
-    pygame.Rect(125, 150, 25, 25),
-
-]
-
-#finish station
-#level1
-#finish = pygame.Rect(100, 175, 25, 25)
-
-#level2
-finish = pygame.Rect(75, 75, 25, 25)
+#specifies the level
+level = Level(2)
 
 #while loop
 run = True
@@ -150,70 +54,70 @@ while run:
     #checks if player does not go beyond arena boundaries
     if movement_player.x != 0 or movement_player.y != 0:
         rect = screen.get_rect().inflate(-6, -6)
-        moved = player.move(movement_player.x, movement_player.y)
+        moved = level.player.move(movement_player.x, movement_player.y)
         
-        for box in boxes:
+        for box in level.boxes:
             box_moved = moved
 
-        for ice in iceBoxes:
+        for ice in level.iceBoxes:
             ice_moved = moved
         
         #if the player is inside the arena he can move
-        if moved.collidelist(arena) == -1 and box_moved.collidelist(arena) == -1:
-            player = moved
+        if moved.collidelist(level.arena) == -1 and box_moved.collidelist(level.arena) == -1:
+            level.player = moved
 
-            for box in boxes:
+            for box in level.boxes:
                 #if the player collides any box it moves
-                if player.colliderect(box):
+                if level.player.colliderect(box):
                     box_moved = box.move(movement_player.x, movement_player.y)
                     #if the box collides with the arena or another box it does not move
-                    if box_moved.collidelist(arena) == -1 and box_moved.collidelist(boxes) == -1 and box_moved.collidelist(iceBoxes) == -1:
+                    if box_moved.collidelist(level.arena) == -1 and box_moved.collidelist(level.boxes) == -1 and box_moved.collidelist(level.iceBoxes) == -1:
                         box.x += movement_player.x
                         box.y += movement_player.y
                     else:
-                        player.x -= movement_player.x
-                        player.y -= movement_player.y
+                        level.player.x -= movement_player.x
+                        level.player.y -= movement_player.y
 
-            for hole in holes:
+            for hole in level.holes:
                 #if the player collides any box it moves
-                if player.colliderect(hole):
+                if level.player.colliderect(hole):
                     run = False
             #ice
-            for ice in iceBoxes:
-                if player.colliderect(ice):
+            for ice in level.iceBoxes:
+                if level.player.colliderect(ice):
                     ice_moved = ice.move(movement_player.x, movement_player.y)
                     #check when icebox collides
-                    while(ice.collidelist(arena) == -1 and ice.collidelist(boxes) == -1 and ice.collidelist(holes) == -1):
+                    while(ice.collidelist(level.arena) == -1 and ice.collidelist(level.boxes) == -1 and ice.collidelist(level.holes) == -1):
                         ice.x += movement_player.x
                         ice.y += movement_player.y
                     
-                    if(ice.collidelist(holes) != -1):
-                        player.x -= movement_player.x
-                        player.y -= movement_player.y
+                    if(ice.collidelist(level.holes) != -1):
+                        level.player.x -= movement_player.x
+                        level.player.y -= movement_player.y
                     else:
                         #compensating for last move
                         ice.x -= movement_player.x
                         ice.y -= movement_player.y
-                        player.x -= movement_player.x
-                        player.y -= movement_player.y
+                        level.player.x -= movement_player.x
+                        level.player.y -= movement_player.y
 
-            del_holes = holes
-            del_boxes = boxes
-            del_ice = iceBoxes
+            del_holes = level.holes
+            del_boxes = level.boxes
+            del_ice = level.iceBoxes
 
             for i in del_holes:
                 for k in del_boxes:
                     if i.colliderect(k):
-                        boxes.remove(k)
-                        holes.remove(i)
+                        level.boxes.remove(k)
+                        level.holes.remove(i)
                 for j in del_ice:
                     if i.colliderect(j):
-                        iceBoxes.remove(j)
-                        holes.remove(i)
+                        level.iceBoxes.remove(j)
+                        level.holes.remove(i)
 
 
             #winning mechanism
-            if player.colliderect(finish):
+            if level.player.colliderect(level.finish):
                 print("\n")
                 print("YOU WON!")
                 run = False
@@ -223,31 +127,31 @@ while run:
     screen.fill((0,0,0))
 
     #draws arena
-    for wall in arena:
+    for wall in level.arena:
         pygame.draw.rect(screen, (0, 255, 0), (wall.x, wall.y, wall.width, wall.height))
 
     
    #draws floor
-    for tile in floor:
+    for tile in level.floor:
         pygame.draw.rect(screen, pygame.Color('pink'), tile)
 
     
     #draws finish
-    pygame.draw.rect(screen, pygame.Color('blue'), finish)
+    pygame.draw.rect(screen, pygame.Color('blue'), level.finish)
     
 
     #draws player
-    pygame.draw.rect(screen, pygame.Color('red'), player)
+    pygame.draw.rect(screen, pygame.Color('red'), level.player)
 
     #draws box
-    for box in boxes:
+    for box in level.boxes:
         pygame.draw.rect(screen, pygame.Color('yellow'), box)
 
     # #draws holes
-    for hole in holes:
+    for hole in level.holes:
         pygame.draw.rect(screen, pygame.Color('grey'), hole)
     #draws ice
-    for ice in iceBoxes:
+    for ice in level.iceBoxes:
         pygame.draw.rect(screen, pygame.Color(0, 255, 255), ice)
 
 
