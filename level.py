@@ -3,6 +3,8 @@ import pygame
 class Level:
 
     def __init__(self, i):
+        
+        #level 1
         if(i == 1):
             self.player = pygame.Rect(325, 175, 25, 25)
 
@@ -36,6 +38,7 @@ class Level:
 
             self.finish = pygame.Rect(100, 175, 25, 25)
 
+        #level 2
         elif(i == 2):
             self.player = pygame.Rect(75, 175, 25, 25)
 

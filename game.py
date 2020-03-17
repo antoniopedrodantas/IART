@@ -1,55 +1,25 @@
 import pygame
+import argparse
+
 from sys import exit
 
 from level import *
 
 
-#initializes the screen 500x500
-screen = pygame.display.set_mode((500, 500))
 
-#inits game
-pygame.get_init()
-
-#sets window caption
-pygame.display.set_caption("Box World")
-
-# Creates a clock object to keep track of time
-clock = pygame.time.Clock()
-
-#specifies the level
-level = Level(2)
-
-#while loop
-run = True
-while run:
-    
-    #press delay for increased playability
-    pygame.time.delay(90)
-
-    #adds key functionality
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-
-    keys = pygame.key.get_pressed()
-
-    #creates movement vector that is later used for checking arena boundaries
-    movement_player = pygame.Vector2(0, 0)
-
-    if keys[pygame.K_LEFT]:
+def move(movement_player, movement):
+    if(movement == "left"):
         movement_player.x -= 25
-
-    if keys[pygame.K_RIGHT]:
+    elif(movement == "right"):
         movement_player.x += 25
-
-    if keys[pygame.K_UP]:
+    elif(movement == "up"):
         movement_player.y -= 25
+    elif(movement == "down"):
+        movement_player.y += 25  
 
-    if keys[pygame.K_DOWN]:
-        movement_player.y += 25
 
-    if keys[pygame.K_ESCAPE]:
-        run = False
+
+def calculateGameState(level):
 
     #checks if player does not go beyond arena boundaries
     if movement_player.x != 0 or movement_player.y != 0:
@@ -81,7 +51,10 @@ while run:
             for hole in level.holes:
                 #if the player collides any box it moves
                 if level.player.colliderect(hole):
-                    run = False
+                    #return False
+                    level.player.x -= movement_player.x
+                    level.player.y -= movement_player.y
+
             #ice
             for ice in level.iceBoxes:
                 if level.player.colliderect(ice):
@@ -120,11 +93,10 @@ while run:
             if level.player.colliderect(level.finish):
                 print("\n")
                 print("YOU WON!")
-                run = False
+                return False
 
 
-
-    screen.fill((0,0,0))
+def drawGameState(level):
 
     #draws arena
     for wall in level.arena:
@@ -155,10 +127,82 @@ while run:
         pygame.draw.rect(screen, pygame.Color(0, 255, 255), ice)
 
 
+
+#initializes the screen 500x500
+screen = pygame.display.set_mode((500, 500))
+
+#inits game
+pygame.get_init()
+
+#sets window caption
+pygame.display.set_caption("Box World")
+
+# Creates a clock object to keep track of time
+clock = pygame.time.Clock()
+
+#gets the level
+parser = argparse.ArgumentParser(description='Gets game level')
+parser.add_argument('level', type=int, help='Game level')
+args = parser.parse_args()
+l = args.level
+
+#specifies the level
+level = Level(l)
+
+#while loop
+run = True
+while True:
+    
+    #press delay for increased playability
+    pygame.time.delay(90)
+
+    #adds key functionality
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+    keys = pygame.key.get_pressed()
+
+    #creates movement vector that is later used for checking arena boundaries
+    movement_player = pygame.Vector2(0, 0)
+
+    #calculates player movement
+    if keys[pygame.K_LEFT]:
+        move(movement_player, "left")
+
+    if keys[pygame.K_RIGHT]:
+        move(movement_player, "right")
+
+    if keys[pygame.K_UP]:
+        move(movement_player, "up")
+
+    if keys[pygame.K_DOWN]:
+        move(movement_player, "down")
+
+    if keys[pygame.K_r]:
+        level = Level(l)
+
+    if keys[pygame.K_ESCAPE]:
+        run = False
+
+    #calculates game state
+    if calculateGameState(level) == False:
+        run = False
+
+    screen.fill((0,0,0))
+
+    #draws game state
+    drawGameState(level)
+
     # Update the full Surface to the screen
     pygame.display.flip()
 
     # Run the program at 60 frames per second
     clock.tick(60)
+
+    #break condition
+    if run == False:
+        break
+    
 
 pygame.quit()
