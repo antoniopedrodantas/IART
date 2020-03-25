@@ -6,7 +6,7 @@ class Level:
         
         #level 1
         if(i == 1):
-            self.player = pygame.Rect(325, 175, 25, 25)
+            self.player = pygame.Rect(300, 175, 25, 25)
 
             self.boxes = [
                 pygame.Rect(175, 150, 25, 25),
@@ -87,6 +87,12 @@ class Level:
             ]
 
             self.finish = pygame.Rect(75, 75, 25, 25)
+
+    
+    def __eq__(self, other):
+
+        return self.player == other.player and self.boxes == other.boxes and self.iceBoxes == other.iceBoxes and self.holes == other.holes
+
 
 
 

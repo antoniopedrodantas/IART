@@ -2,6 +2,7 @@ import pygame
 import argparse
 
 from sys import exit
+from copy import deepcopy
 
 from level import *
 from state import *
@@ -98,6 +99,8 @@ def calculateGameState(movement, st):
             if st.player.colliderect(st.finish):
                 print("\n")
                 print("YOU WON!")
+                pygame.quit()
+                run = False
                 return False
 
 
@@ -132,52 +135,60 @@ def drawGameState(level):
         pygame.draw.rect(screen, pygame.Color(0, 255, 255), ice)
 
 
-def nextMove():
+def compareStates(possibleMoves):
 
-    #creates movement
-    movement = pygame.Vector2(0, 0)
+    for st1 in possibleMoves:
+        flag = True
+        for st2 in visited:
+            if(st1.level == st2.level):
+                flag = False
+        if flag:
+            queue.append(st1)
+                
 
-    #creates list with possible states
-    possibleStates = []
 
+def nextMove(movement):
 
+    possibleMoves = []
+    
     #creates all tmp variables
-    tmp1 = State(state.level)
+    tmp1 = deepcopy(state)
 
-    tmp2 = State(state.level)
+    tmp2 = deepcopy(state)
 
-    tmp3 = State(state.level)
+    tmp3 = deepcopy(state)
 
-    tmp4 = State(state.level)
+    tmp4 = deepcopy(state)
 
     # is it left?
-    movement = move(movement, "left")
-    calculateGameState(movement, tmp1.level)
+    movement1 = pygame.Vector2(-25, 0)
+    if calculateGameState(movement1, tmp1.level) == False:
+        run = False
     tmp1.addMove("left")
-    possibleStates.append(tmp1)
+    possibleMoves.append(tmp1)
 
     # is it right?
-    movement = move(movement, "right")
-    calculateGameState(movement, tmp2.level)
+    movement2 = pygame.Vector2(25, 0)
+    if calculateGameState(movement2, tmp2.level) == False:
+        run = False
     tmp2.addMove("right")
-    possibleStates.append(tmp2)
+    possibleMoves.append(tmp2)
 
     # is it up?
-    movement = move(movement, "up")
-    calculateGameState(movement, tmp3.level)
+    movement3 = pygame.Vector2(0, -25)
+    if calculateGameState(movement3, tmp3.level) == False:
+        run = False
     tmp3.addMove("up")
-    possibleStates.append(tmp3)
+    possibleMoves.append(tmp3)
 
     # is it down?
-    movement = move(movement, "down")
-    calculateGameState(movement, tmp4.level)
+    movement4 = pygame.Vector2(0, 25)
+    if calculateGameState(movement4, tmp4.level) == False:
+        run = False
     tmp4.addMove("down")
-    possibleStates.append(tmp4)
+    possibleMoves.append(tmp4)
 
-    for st in possibleStates:
-        queue.append(st)
-        
-
+    compareStates(possibleMoves)
 
 
 
@@ -217,11 +228,13 @@ queue = []
 #initial state added to the queue
 queue.append(state)
 
+#creates movement
+movement = pygame.Vector2(0, 0)
+
 
 #while loop
 run = True
 while True:
-    
     
     state = queue[0]
 
@@ -230,25 +243,8 @@ while True:
         if event.type == pygame.QUIT:
             run = False
 
+    #(?)
     keys = pygame.key.get_pressed()
-
-    #creates movement vector that is later used for checking arena boundaries
-    #movement_player = pygame.Vector2(0, 0)
-
-    #calculates player movement
-    """
-    if keys[pygame.K_LEFT]:
-        move(movement_player, "left")
-
-    if keys[pygame.K_RIGHT]:
-        move(movement_player, "right")
-
-    if keys[pygame.K_UP]:
-        move(movement_player, "up")
-
-    if keys[pygame.K_DOWN]:
-        move(movement_player, "down")
-    """
 
     if keys[pygame.K_r]:
         level = Level(l)
@@ -257,42 +253,28 @@ while True:
         run = False
     
 
-
     #calculates next move
-    nextMove()
-
+    nextMove(movement)
 
     #press delay for increased playability
-    pygame.time.delay(90)
+    pygame.time.delay(0)
 
     #draws game state
     drawGameState(queue[0].level)
-
+    
     # Update the full Surface to the screen
     pygame.display.flip()
 
     # Run the program at 60 frames per second
     clock.tick(60)
 
-    queue.remove(queue[0])
-    print(state.moves)
-    
+    #add node to already visited
+    visited.append(queue[0])
 
-
-    #calculates game state
-    #if calculateGameState(movement_player) == False:
-        #run = False
+    #remove the first queue element
+    queue.remove(queue[0])   
 
     screen.fill((0,0,0))
-
-    #draws game state
-    #drawGameState(level)
-
-    # Update the full Surface to the screen
-    #pygame.display.flip()
-
-    # Run the program at 60 frames per second
-    #clock.tick(60)
 
     #break condition
     if run == False:
