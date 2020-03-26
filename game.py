@@ -1,5 +1,6 @@
 import pygame
 import argparse
+import math
 
 from sys import exit
 from copy import deepcopy
@@ -7,8 +8,15 @@ from copy import deepcopy
 from level import *
 from state import *
 
+try:
+    import Queue as Q  # ver. < 3.0
+except ImportError:
+    import queue as Q
+
 run = True
 solution = []
+
+# ============================================== FUNCTIONS ==============================================
 
 
 def move(movement_player, movement):
@@ -138,7 +146,8 @@ def drawGameState(level):
     for ice in level.iceBoxes:
         pygame.draw.rect(screen, pygame.Color(0, 255, 255), ice)
 
-#breadth-first-search
+
+# ============================================== BREADTH-FIRST-SEARCH ==============================================
 def compareStatesBFS(possibleMoves):
     for st1 in possibleMoves:
         flag = True
@@ -148,7 +157,8 @@ def compareStatesBFS(possibleMoves):
         if flag:
             queue.append(st1)
 
-# depth-first-search
+
+# ============================================== DEPTH-FIRST-SEARCH ==============================================
 def compareStatesDFS(possibleMoves):
     for st1 in possibleMoves:
         flag = True
@@ -156,10 +166,26 @@ def compareStatesDFS(possibleMoves):
             if st1.level == st2.level:
                 flag = False
         if flag:
-            queue.insert(1, st1)          
+            queue.insert(1, st1)
 
 
+# ============================================== GREEDY ==============================================
+def exitDistance(s):
+    return math.sqrt(math.pow(s.level.player.x - s.level.finish.x, 2) + math.pow(s.level.player.y - s.level.finish.y, 2))
 
+
+def compareStatesGreedy(possibleMoves):
+
+    for st1 in possibleMoves:
+        flag = True
+        for st2 in visited:
+            if st1.level == st2.level:
+                flag = False
+        if flag:
+            queue.put(st1)     
+
+
+# # ============================================== A.I. FUNCTIONS ==============================================
 def nextMove():
     possibleMoves = []
 
@@ -202,8 +228,8 @@ def nextMove():
     elif args.algorithm == "dfs":
         possibleMoves.reverse()
         compareStatesDFS(possibleMoves)
-
-
+    elif args.algorithm == "greedy":
+        compareStatesGreedy(possibleMoves)
 
 
 def printSolution(state, screen, pygame):
@@ -266,7 +292,11 @@ visited = []
 state = State(level)
 
 # queue with nodes
-queue = [state]
+if args.algorithm == "greedy":
+    queue = Q.PriorityQueue()
+    queue.put(state)
+else:
+    queue = [state]
 
 # initial state added to the queue
 
@@ -276,7 +306,14 @@ movement = pygame.Vector2(0, 0)
 # while loop
 while True:
 
-    state = queue[0]
+    if args.algorithm == "greedy":
+        state = queue.get()
+    else:
+        state = queue[0]
+    
+
+    #if args.algorithm == "greedy":
+        #queue.clear()
 
     # adds key functionality
     # for event in pygame.event.get():
@@ -298,7 +335,7 @@ while True:
     #pygame.time.delay(0)
 
     # draws game state
-    #drawGameState(queue[0].level)
+    #drawGameState(state.level)
 
     # Update the full Surface to the screen
     #pygame.display.flip()
@@ -307,10 +344,15 @@ while True:
     #clock.tick(60)
 
     # add node to already visited
-    visited.append(queue[0])
+    if args.algorithm == "greedy":
+        visited.append(state)
+    else:
+        visited.append(queue[0])
 
     # remove the first queue element
-    queue.remove(queue[0])
+    if args.algorithm != "greedy":
+        queue.remove(queue[0])
+    
 
     #screen.fill((0, 0, 0))
 
