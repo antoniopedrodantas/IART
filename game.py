@@ -30,6 +30,10 @@ def calculateGameState(movement, st):
     global run
     global solution
 
+    #cheks if it is impossible to complete
+    if st.level.finish.collidelist(st.level.boxes) != -1:
+        return False
+
     # FAZER QUE QUANDO O MOVIMENTO NAO FOI POSSIVEL SER REALIZADO A FUNCAO RETORNE FALSE. IRA AJUDAR NA OTIMIZACAO
     # checks if player does not go beyond arena boundaries
     if movement.x != 0 or movement.y != 0:
@@ -134,8 +138,8 @@ def drawGameState(level):
     for ice in level.iceBoxes:
         pygame.draw.rect(screen, pygame.Color(0, 255, 255), ice)
 
-
-def compareStates(possibleMoves):
+#breadth-first-search
+def compareStatesBFS(possibleMoves):
     for st1 in possibleMoves:
         flag = True
         for st2 in visited:
@@ -143,6 +147,17 @@ def compareStates(possibleMoves):
                 flag = False
         if flag:
             queue.append(st1)
+
+# depth-first-search
+def compareStatesDFS(possibleMoves):
+    for st1 in possibleMoves:
+        flag = True
+        for st2 in visited:
+            if st1.level == st2.level:
+                flag = False
+        if flag:
+            queue.insert(1, st1)          
+
 
 
 def nextMove():
@@ -181,7 +196,14 @@ def nextMove():
         tmp4.addMove("down")
         possibleMoves.append(tmp4)
 
-    compareStates(possibleMoves)
+    #puts moves on queue based on algorithm
+    if args.algorithm == "bfs":
+        compareStatesBFS(possibleMoves)
+    elif args.algorithm == "dfs":
+        possibleMoves.reverse()
+        compareStatesDFS(possibleMoves)
+
+
 
 
 def printSolution(state, screen, pygame):
@@ -194,11 +216,7 @@ def printSolution(state, screen, pygame):
 
         currentMove = state.moves[0]
         nextPlay = move(nextPlay, currentMove)
-        print("\nbefore calculate:")
-        print(state.level.player)
         calculateGameState(nextPlay, state)
-        print("after calculate:")
-        print(state.level.player)
         pygame.time.delay(500)
 
         # draws game state
@@ -212,7 +230,6 @@ def printSolution(state, screen, pygame):
 
         screen.fill((0, 0, 0))
 
-        print(state.moves)
         state.moves.pop(0)
 
         if not state.moves:
@@ -233,8 +250,9 @@ pygame.display.set_caption("Box World")
 clock = pygame.time.Clock()
 
 # gets the level
-parser = argparse.ArgumentParser(description='Gets game level')
+parser = argparse.ArgumentParser(description='1-Gets game level, 2-Gets algorithm')
 parser.add_argument('level', type=int, help='Game level')
+parser.add_argument('algorithm', type=str, help='Game algorithm')
 args = parser.parse_args()
 l = args.level
 
@@ -277,16 +295,16 @@ while True:
     nextMove()
 
     # press delay for increased playability
-    pygame.time.delay(0)
+    #pygame.time.delay(0)
 
     # draws game state
-    drawGameState(queue[0].level)
+    #drawGameState(queue[0].level)
 
     # Update the full Surface to the screen
-    pygame.display.flip()
+    #pygame.display.flip()
 
     # Run the program at 60 frames per second
-    clock.tick(60)
+    #clock.tick(60)
 
     # add node to already visited
     visited.append(queue[0])
@@ -294,7 +312,7 @@ while True:
     # remove the first queue element
     queue.remove(queue[0])
 
-    screen.fill((0, 0, 0))
+    #screen.fill((0, 0, 0))
 
     # break condition
     if not run:
