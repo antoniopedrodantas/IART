@@ -15,6 +15,7 @@ except ImportError:
 
 run = True
 solution = []
+max_depth = 10
 
 # ============================================== FUNCTIONS ==============================================
 
@@ -114,8 +115,13 @@ def calculateGameState(movement, st):
 
             # winning mechanism
             if st.level.player.colliderect(st.level.finish):
-                run = False
-                solution = st
+                if args.algorithm == "idfs":
+                    print("\nFOUND A SOLUTION")
+                    run = False
+                    solution = st
+                else:
+                    run = False
+                    solution = st
 
             return True
 
@@ -169,13 +175,28 @@ def compareStatesDFS(possibleMoves):
             queue.insert(1, st1)
 
 
+# ============================================== ITERATIVE DEPTH-FIRST-SEARCH ==============================================
+def compareStatesIDFS(possibleMoves):
+
+    global max_depth
+
+    for st1 in possibleMoves:
+        if len(st1.moves) > max_depth:
+            continue
+        flag = True
+        for st2 in visited:
+            if st1.level == st2.level:
+                flag = False
+        if flag:
+            queue.insert(1, st1)
+
+
 # ============================================== GREEDY ==============================================
 def exitDistance(s):
     return math.sqrt(math.pow(s.level.player.x - s.level.finish.x, 2) + math.pow(s.level.player.y - s.level.finish.y, 2))
 
 
 def compareStatesGreedy(possibleMoves):
-
     for st1 in possibleMoves:
         flag = True
         for st2 in visited:
@@ -223,13 +244,16 @@ def nextMove():
         possibleMoves.append(tmp4)
 
     #puts moves on queue based on algorithm
-    if args.algorithm == "bfs":
+    if args.algorithm == "bfs":         #breadth-first
         compareStatesBFS(possibleMoves)
-    elif args.algorithm == "dfs":
+    elif args.algorithm == "dfs":       #depth-first search
         possibleMoves.reverse()
         compareStatesDFS(possibleMoves)
-    elif args.algorithm == "greedy":
+    elif args.algorithm == "greedy":    #greedy
         compareStatesGreedy(possibleMoves)
+    elif args.algorithm == "idfs":      # iterative depth search
+        possibleMoves.reverse()  
+        compareStatesIDFS(possibleMoves)
 
 
 
@@ -267,6 +291,12 @@ movement = pygame.Vector2(0, 0)
 
 # while loop
 while True:
+
+    if args.algorithm == "idfs" and len(queue) == 0:
+        queue = [State(Level(l))]
+        visited = []
+        max_depth = max_depth + 10
+        print("\n Retrying idfs with new depth limit: ",  max_depth)
 
     if args.algorithm == "greedy":
         state = queue.get()
