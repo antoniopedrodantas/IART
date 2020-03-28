@@ -16,7 +16,7 @@ except ImportError:
 run = True
 solution = []
 max_depth = 10
-
+run2 = True
 # ============================================== FUNCTIONS ==============================================
 
 
@@ -38,6 +38,7 @@ def move(movement_player, movement):
 def calculateGameState(movement, st):
     global run
     global solution
+    global run2
 
     #cheks if it is impossible to complete
     if st.level.finish.collidelist(st.level.boxes) != -1:
@@ -115,10 +116,9 @@ def calculateGameState(movement, st):
 
             # winning mechanism
             if st.level.player.colliderect(st.level.finish):
-                if args.algorithm == "idfs":
-                    print("\nFOUND A SOLUTION")
-                    run = False
-                    solution = st
+                if args.mode == "human":
+                    print(st.moves)
+                    run2 = False
                 else:
                     run = False
                     solution = st
@@ -155,6 +155,7 @@ def drawGameState(level):
 
 # ============================================== BREADTH-FIRST-SEARCH ==============================================
 def compareStatesBFS(possibleMoves):
+
     for st1 in possibleMoves:
         flag = True
         for st2 in visited:
@@ -206,8 +207,8 @@ def compareStatesGreedy(possibleMoves):
             queue.put(st1)     
 
 
-# # ============================================== A.I. FUNCTIONS ==============================================
-def nextMove():
+# ============================================== A.I. FUNCTIONS ==============================================
+def nextMove(algorithm, state):
     possibleMoves = []
 
     # creates all tmp variables
@@ -223,48 +224,95 @@ def nextMove():
     movement1 = pygame.Vector2(-25, 0)
     if calculateGameState(movement1, tmp1):
         tmp1.addMove("left")
-        possibleMoves.append(tmp1)
+        if not tmp1 == state:
+            possibleMoves.append(tmp1)
 
     # is it right?
     movement2 = pygame.Vector2(25, 0)
     if calculateGameState(movement2, tmp2):
         tmp2.addMove("right")
-        possibleMoves.append(tmp2)
+        if not tmp2 == state:
+            possibleMoves.append(tmp2)
 
     # is it up?
     movement3 = pygame.Vector2(0, -25)
     if calculateGameState(movement3, tmp3):
         tmp3.addMove("up")
-        possibleMoves.append(tmp3)
+        if not tmp3 == state:
+            possibleMoves.append(tmp3)
 
     # is it down?
     movement4 = pygame.Vector2(0, 25)
     if calculateGameState(movement4, tmp4):
         tmp4.addMove("down")
-        possibleMoves.append(tmp4)
+        if not tmp4 == state:
+            possibleMoves.append(tmp4)
 
     #puts moves on queue based on algorithm
-    if args.algorithm == "bfs":         #breadth-first
+    if algorithm == "bfs":         #breadth-first
         compareStatesBFS(possibleMoves)
-    elif args.algorithm == "dfs":       #depth-first search
+    elif algorithm == "dfs":       #depth-first search
         possibleMoves.reverse()
         compareStatesDFS(possibleMoves)
-    elif args.algorithm == "greedy":    #greedy
+    elif algorithm == "greedy":    #greedy
         compareStatesGreedy(possibleMoves)
-    elif args.algorithm == "idfs":      # iterative depth search
+    elif algorithm == "idfs":      # iterative depth search
         possibleMoves.reverse()  
         compareStatesIDFS(possibleMoves)
 
+def findSolution(state, algorithm):
+
+    global max_depth
+    global queue
+    global visited
+    global run2
+
+    while run2:
+
+        if algorithm == "idfs" and len(queue) == 0:
+            queue = [State(Level(l))]
+            visited = []
+            max_depth = max_depth + 10
+            print("\n Retrying idfs with new depth limit: ",  max_depth)
+
+        if algorithm == "greedy":
+            state = queue.get()
+        else:
+            state = queue[0]
 
 
-#########################################################
+        # calculates next move
+        nextMove(algorithm, state)
+
+        # add node to already visited
+        if algorithm == "greedy":
+            visited.append(state)
+        else:
+            visited.append(queue[0])
+
+        # remove the first queue element
+        if algorithm != "greedy":
+            queue.remove(queue[0])
+
+        # break condition
+        if not run:
+            print(solution.moves)
+            break
+
+
+
+# # ============================================== MAIN SCRIPT ==============================================
+
+
 # initializes the screen 500x500
 screen = pygame.display.set_mode((500, 500))
 
 # gets the level
-parser = argparse.ArgumentParser(description='1-Gets game level, 2-Gets algorithm')
+parser = argparse.ArgumentParser()
+parser.add_argument('mode', type=str, help='human/player')
 parser.add_argument('level', type=int, help='Game level')
-parser.add_argument('algorithm', type=str, help='Game algorithm')
+parser.add_argument('-algorithm', type=str, help='Game algorithm', required= False)
+
 args = parser.parse_args()
 l = args.level
 
@@ -276,6 +324,8 @@ visited = []
 
 # current game state
 state = State(level)
+
+queue = []
 
 # queue with nodes
 if args.algorithm == "greedy":
@@ -289,71 +339,101 @@ else:
 # creates movement
 movement = pygame.Vector2(0, 0)
 
+
+if args.mode == "human":
+
+    # inits game
+    pygame.get_init()
+
+    # sets window caption
+    pygame.display.set_caption("Box World 2")
+
+    # Creates a clock object to keep track of time
+    clock = pygame.time.Clock()
+
+    state.level = Level(l)
+
+    while True:
+
+        # adds key functionality
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_r]:
+            level = Level(l)
+
+        if keys[pygame.K_ESCAPE]:
+            run = False
+
+        #creates movement vector that is later used for checking arena boundaries
+        movement_player = pygame.Vector2(0, 0)
+
+        if keys[pygame.K_LEFT]:
+            movement_player= move(movement_player, "left")
+
+        if keys[pygame.K_RIGHT]:
+            movement_player = move(movement_player, "right")
+
+        if keys[pygame.K_UP]:
+            movement_player = move(movement_player, "up")
+
+        if keys[pygame.K_DOWN]:
+            movement_player = move(movement_player, "down")
+
+        if keys[pygame.K_r]:
+            state = State(Level(l))
+
+        if keys[pygame.K_h]:
+            state = State(Level(l))
+
+            findSolution(state, "idfs")
+            state = State(Level(l))
+
+
+        # calculates next move
+        calculateGameState(movement_player, state)
+
+        pygame.time.delay(80)
+
+        # draws game state
+        drawGameState(state.level)
+
+        # Update the full Surface to the screen
+        pygame.display.flip()
+
+        # Run the program at 60 frames per second
+        clock.tick(60)
+
+        screen.fill((0, 0, 0))
+
+        # break condition
+        if not run:
+            break
+        
 # while loop
-while True:
-
-    if args.algorithm == "idfs" and len(queue) == 0:
-        queue = [State(Level(l))]
-        visited = []
-        max_depth = max_depth + 10
-        print("\n Retrying idfs with new depth limit: ",  max_depth)
-
-    if args.algorithm == "greedy":
-        state = queue.get()
-    else:
-        state = queue[0]
-    
-
-    #if args.algorithm == "greedy":
-        #queue.clear()
-
-    # adds key functionality
-    # for event in pygame.event.get():
-    #    if event.type == pygame.QUIT:
-    #       run = False
-
-    # keys = pygame.key.get_pressed()
-
-    # if keys[pygame.K_r]:
-    #    level = Level(l)
-
-    # if keys[pygame.K_ESCAPE]:
-    #    run = False
-
-    # calculates next move
-    nextMove()
-
-    # add node to already visited
-    if args.algorithm == "greedy":
-        visited.append(state)
-    else:
-        visited.append(queue[0])
-
-    # remove the first queue element
-    if args.algorithm != "greedy":
-        queue.remove(queue[0])
-
-    # break condition
-    if not run:
-        print(solution.moves)
-        break
+else:
+    findSolution(state, args.algorithm)
 
 
-#printing Solution
+    #--------------------- Printing Solution --------------------#
 
-# inits game
-pygame.get_init()
 
-# sets window caption
-pygame.display.set_caption("Box World")
+    # inits game
+    pygame.get_init()
 
-# Creates a clock object to keep track of time
-clock = pygame.time.Clock()
+    # sets window caption
+    pygame.display.set_caption("Box World 2")
 
-state.level = Level(l)
+    # Creates a clock object to keep track of time
+    clock = pygame.time.Clock()
 
-while True:
+    state.level = Level(l)
+    state.moves = solution.moves
 
+    while True:
         nextPlay = pygame.Vector2(0, 0)
 
         currentMove = state.moves[0]
