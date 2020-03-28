@@ -232,48 +232,10 @@ def nextMove():
         compareStatesGreedy(possibleMoves)
 
 
-def printSolution(state, screen, pygame):
-
-    state.level = Level(l)
-
-    while True:
-
-        nextPlay = pygame.Vector2(0, 0)
-
-        currentMove = state.moves[0]
-        nextPlay = move(nextPlay, currentMove)
-        calculateGameState(nextPlay, state)
-        pygame.time.delay(500)
-
-        # draws game state
-        drawGameState(state.level)
-
-        # Update the full Surface to the screen
-        pygame.display.flip()
-
-        # Run the program at 60 frames per second
-        clock.tick(60)
-
-        screen.fill((0, 0, 0))
-
-        state.moves.pop(0)
-
-        if not state.moves:
-            break
-
 
 #########################################################
 # initializes the screen 500x500
 screen = pygame.display.set_mode((500, 500))
-
-# inits game
-pygame.get_init()
-
-# sets window caption
-pygame.display.set_caption("Box World")
-
-# Creates a clock object to keep track of time
-clock = pygame.time.Clock()
 
 # gets the level
 parser = argparse.ArgumentParser(description='1-Gets game level, 2-Gets algorithm')
@@ -331,18 +293,6 @@ while True:
     # calculates next move
     nextMove()
 
-    # press delay for increased playability
-    #pygame.time.delay(0)
-
-    # draws game state
-    #drawGameState(state.level)
-
-    # Update the full Surface to the screen
-    #pygame.display.flip()
-
-    # Run the program at 60 frames per second
-    #clock.tick(60)
-
     # add node to already visited
     if args.algorithm == "greedy":
         visited.append(state)
@@ -352,15 +302,50 @@ while True:
     # remove the first queue element
     if args.algorithm != "greedy":
         queue.remove(queue[0])
-    
-
-    #screen.fill((0, 0, 0))
 
     # break condition
     if not run:
         print(solution.moves)
-        printSolution(solution, screen, pygame)
         break
+
+
+#printing Solution
+
+# inits game
+pygame.get_init()
+
+# sets window caption
+pygame.display.set_caption("Box World")
+
+# Creates a clock object to keep track of time
+clock = pygame.time.Clock()
+
+state.level = Level(l)
+
+while True:
+
+        nextPlay = pygame.Vector2(0, 0)
+
+        currentMove = state.moves[0]
+        nextPlay = move(nextPlay, currentMove)
+        calculateGameState(nextPlay, state)
+        pygame.time.delay(500)
+
+        # draws game state
+        drawGameState(state.level)
+
+        # Update the full Surface to the screen
+        pygame.display.flip()
+
+        # Run the program at 60 frames per second
+        clock.tick(60)
+
+        screen.fill((0, 0, 0))
+
+        state.moves.pop(0)
+
+        if not state.moves:
+            break
 
 
 pygame.quit()
