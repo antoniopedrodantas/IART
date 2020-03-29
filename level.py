@@ -3,6 +3,8 @@ import pygame
 class Level:
 
     def __init__(self, i):
+
+        # ======================================= LEVEL 1 =======================================
         
         #level 1
         if(i == 1):
@@ -37,6 +39,8 @@ class Level:
             self.holes = []
 
             self.finish = pygame.Rect(100, 175, 25, 25)
+
+        # ======================================= LEVEL 2 =======================================
 
         #level 2
         elif(i == 2):
@@ -87,6 +91,170 @@ class Level:
             ]
 
             self.finish = pygame.Rect(75, 75, 25, 25)
+
+        # ======================================= LEVEL 3 =======================================
+        
+        #level 3
+        if(i == 3):
+            self.player = pygame.Rect(200, 300, 25, 25)
+
+            self.boxes = [
+                pygame.Rect(200, 275, 25, 25),
+                pygame.Rect(175, 250, 25, 25),
+                pygame.Rect(225, 250, 25, 25),
+                pygame.Rect(175, 225, 25, 25),
+                pygame.Rect(200, 200, 25, 25),
+                pygame.Rect(250, 200, 25, 25),
+                pygame.Rect(225, 175, 25, 25),
+            ]
+
+            self.iceBoxes = []
+
+            self.floor = [
+                pygame.Rect(175, 150, 25, 200),
+                pygame.Rect(200, 150, 25, 200),
+                pygame.Rect(225, 150, 25, 200),
+                pygame.Rect(250, 150, 25, 200),
+            ]
+
+            self.arena = [
+                pygame.Rect(150, 325, 150, 25),
+                pygame.Rect(150, 150, 25, 175),
+                pygame.Rect(150, 150, 75, 25),
+                pygame.Rect(250, 150, 50, 25),
+                pygame.Rect(275, 150, 25, 200),
+            ]
+
+            self.holes = [
+                pygame.Rect(200, 250, 25, 25),
+                pygame.Rect(200, 225, 25, 25),
+                pygame.Rect(225, 225, 25, 25),
+                pygame.Rect(225, 200, 25, 25),
+            ]
+
+            self.finish = pygame.Rect(225, 150, 25, 25)
+
+        # ======================================= LEVEL 4 =======================================
+
+        #level 4
+        if(i == 4):
+            
+            self.player = pygame.Rect(150, 200, 25, 25)
+
+            self.boxes = [
+                pygame.Rect(325, 175, 25, 25),
+            ]
+
+            self.iceBoxes = [
+                pygame.Rect(225, 200, 25, 25),
+                pygame.Rect(225, 250, 25, 25),
+                pygame.Rect(275, 200, 25, 25),
+                pygame.Rect(275, 250, 25, 25),
+            ]
+
+            self.floor = [
+                pygame.Rect(150, 150, 25, 100),
+                pygame.Rect(175, 150, 25, 200),
+                pygame.Rect(200, 150, 25, 200),
+                pygame.Rect(225, 150, 25, 200),
+                pygame.Rect(250, 150, 25, 200),
+                pygame.Rect(275, 150, 25, 200),
+                pygame.Rect(300, 150, 25, 200),
+                pygame.Rect(325, 150, 25, 200),
+            ]
+
+            self.arena = [
+                pygame.Rect(175, 200, 25, 25),
+                pygame.Rect(175, 225, 25, 25),
+                pygame.Rect(150, 225, 25, 25),
+                pygame.Rect(125, 150, 25, 100),
+                pygame.Rect(150, 150, 225, 25),
+                pygame.Rect(350, 150, 25, 200),
+                pygame.Rect(325, 325, 25, 25),
+                pygame.Rect(175, 325, 125, 25),
+                pygame.Rect(250, 175, 25, 25),
+                pygame.Rect(275, 350, 75, 25),
+
+                pygame.Rect(175, 250, 25, 75),
+            ]
+
+            self.holes = [
+                pygame.Rect(200, 275, 25, 25),
+                pygame.Rect(225, 275, 25, 25),
+                pygame.Rect(250, 275, 25, 25),
+                pygame.Rect(275, 275, 25, 25),
+                pygame.Rect(300, 275, 25, 25),
+                pygame.Rect(325, 275, 25, 25),
+
+                pygame.Rect(200, 300, 25, 25),
+                pygame.Rect(225, 300, 25, 25),
+                pygame.Rect(250, 300, 25, 25),
+                pygame.Rect(275, 300, 25, 25),
+                pygame.Rect(300, 300, 25, 25),
+            ]
+
+            self.finish = pygame.Rect(300, 325, 25, 25)
+
+         # ======================================= LEVEL 5 =======================================
+        
+        #level 5
+        if(i == 5):
+            self.player = pygame.Rect(200, 250, 25, 25)
+
+            self.boxes = [
+                pygame.Rect(275, 250, 25, 25),
+                pygame.Rect(275, 325, 25, 25),
+                pygame.Rect(350, 250, 25, 25),
+            ]
+
+            self.iceBoxes = []
+
+            self.floor = [
+                pygame.Rect(200, 150, 25, 200),
+                pygame.Rect(225, 150, 25, 200),
+                pygame.Rect(250, 150, 25, 225),
+                pygame.Rect(275, 150, 25, 225),
+                pygame.Rect(300, 150, 25, 225),
+                pygame.Rect(325, 150, 25, 225),
+                pygame.Rect(350, 150, 25, 175),
+                pygame.Rect(375, 150, 25, 175),
+            ]
+
+            self.arena = [
+                pygame.Rect(175, 150, 25, 200), #v l
+                pygame.Rect(175, 150, 225, 25), #h t
+                
+                pygame.Rect(175, 350, 75, 25),
+                pygame.Rect(225, 375, 125, 25), #h b
+                pygame.Rect(325, 325, 25, 75),
+
+                pygame.Rect(400, 150, 25, 25), #v r
+                pygame.Rect(400, 200, 25, 125), #v r
+                pygame.Rect(375, 200, 25, 25), #v r
+                pygame.Rect(375, 225, 25, 25), #v r
+                
+                pygame.Rect(300, 300, 125, 25),
+                pygame.Rect(300, 275, 25, 50),
+
+                #middle
+                pygame.Rect(225, 200, 25, 125), 
+                pygame.Rect(225, 200, 100, 25),
+                pygame.Rect(225, 300, 50, 25),
+                pygame.Rect(300, 225, 50, 25),   
+
+                #block exit
+                pygame.Rect(425, 150, 25, 75),
+            ]
+
+            self.holes = [
+                pygame.Rect(350, 200, 25, 25),
+                pygame.Rect(350, 175, 25, 25),
+                pygame.Rect(375, 175, 25, 25),
+            ]
+
+            self.finish = pygame.Rect(400, 175, 25, 25)
+
+       
 
     
     def __eq__(self, other):

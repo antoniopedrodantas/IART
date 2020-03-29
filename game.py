@@ -57,7 +57,7 @@ def calculateGameState(movement, st):
             ice_moved = moved
 
         # if the player is inside the arena he can move
-        if moved.collidelist(st.level.arena) == -1 and box_moved.collidelist(st.level.arena) == -1:
+        if moved.collidelist(st.level.arena) == -1: #and box_moved.collidelist(st.level.arena) == -1
             st.level.player = moved
 
             for box in st.level.boxes:
@@ -73,23 +73,21 @@ def calculateGameState(movement, st):
                         st.level.player.x -= movement.x
                         st.level.player.y -= movement.y
 
-            for hole in st.level.holes:
-                # if the player collides any box it moves
-                if st.level.player.colliderect(hole):
-                    # return False
-                    st.level.player.x -= movement.x
-                    st.level.player.y -= movement.y
-
             # ice
             for ice in st.level.iceBoxes:
+
                 if st.level.player.colliderect(ice):
                     ice_moved = ice.move(movement.x, movement.y)
                     # check when icebox collides
-                    while (ice.collidelist(st.level.arena) == -1 and ice.collidelist(
-                            st.level.boxes) == -1 and ice.collidelist(st.level.holes) == -1):
+                    while (ice_moved.collidelist(st.level.arena) == -1 and ice_moved.collidelist(st.level.boxes) == -1 and ice_moved.collidelist(st.level.holes) == -1 and ice_moved.collidelist(st.level.iceBoxes) == -1):
+                        ice_moved.x += movement.x
+                        ice_moved.y += movement.y
                         ice.x += movement.x
                         ice.y += movement.y
 
+                    ice.x += movement.x
+                    ice.y += movement.y    
+                        
                     if ice.collidelist(st.level.holes) != -1:
                         st.level.player.x -= movement.x
                         st.level.player.y -= movement.y
@@ -99,6 +97,15 @@ def calculateGameState(movement, st):
                         ice.y -= movement.y
                         st.level.player.x -= movement.x
                         st.level.player.y -= movement.y
+
+            for hole in st.level.holes:
+                # if the player collides any holes it doesnt move
+                if st.level.player.colliderect(hole):
+                    # return False
+                    st.level.player.x -= movement.x
+                    st.level.player.y -= movement.y
+
+            
 
             del_holes = st.level.holes
             del_boxes = st.level.boxes
@@ -127,13 +134,14 @@ def calculateGameState(movement, st):
 
 
 def drawGameState(level):
-    # draws arena
-    for wall in level.arena:
-        pygame.draw.rect(screen, (0, 255, 0), (wall.x, wall.y, wall.width, wall.height))
 
     # draws floor
     for tile in level.floor:
         pygame.draw.rect(screen, pygame.Color('pink'), tile)
+
+    # draws arena
+    for wall in level.arena:
+        pygame.draw.rect(screen, (0, 255, 0), (wall.x, wall.y, wall.width, wall.height))
 
     # draws finish
     pygame.draw.rect(screen, pygame.Color('blue'), level.finish)
@@ -269,6 +277,7 @@ def findSolution(state, algorithm):
 
     while run2:
 
+
         if algorithm == "idfs" and len(queue) == 0:
             queue = [State(Level(l))]
             visited = []
@@ -284,6 +293,7 @@ def findSolution(state, algorithm):
         # calculates next move
         nextMove(algorithm, state)
 
+
         # add node to already visited
         if algorithm == "greedy":
             visited.append(state)
@@ -293,6 +303,8 @@ def findSolution(state, algorithm):
         # remove the first queue element
         if algorithm != "greedy":
             queue.remove(queue[0])
+
+        print(len(state.moves))
 
         # break condition
         if not run:
@@ -415,11 +427,11 @@ if args.mode == "human":
         
 # while loop
 else:
+
     findSolution(state, args.algorithm)
 
 
     #--------------------- Printing Solution --------------------#
-
 
     # inits game
     pygame.get_init()
@@ -439,6 +451,7 @@ else:
         currentMove = state.moves[0]
         nextPlay = move(nextPlay, currentMove)
         calculateGameState(nextPlay, state)
+
         pygame.time.delay(500)
 
         # draws game state
