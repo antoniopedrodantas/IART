@@ -17,6 +17,9 @@ run = True
 solution = []
 max_depth = 10
 run2 = True
+
+solutions = []
+
 # ============================================== FUNCTIONS ==============================================
 
 
@@ -127,8 +130,14 @@ def calculateGameState(movement, st):
                     print(st.moves)
                     run2 = False
                 else:
-                    run = False
-                    solution = st
+                    if args.algorithm == "astar":
+                        solution = st
+                        solutions.append(solution)
+                        if len(solutions) > 5:
+                            run = False
+                    else:
+                        run = False
+                        solution = st
 
             return True
 
@@ -215,6 +224,38 @@ def compareStatesGreedy(possibleMoves):
             queue.put(st1)     
 
 
+# ============================================== A - STAR ==============================================
+def compareStatesAstar(possibleMoves):
+
+    temporary = []
+
+    for st1 in possibleMoves:
+        flag = True
+        for st2 in visited:
+            if st1.level == st2.level:
+                flag = False
+        if flag:
+            temporary.append(st1)
+    
+    if len(temporary) == 0:
+        run = False
+    else:
+        for s in temporary:
+            queue.append(s)
+
+def calculateMinimumSolution():
+
+    lowest_value_index = 0
+
+    for i in range(len(solutions)):
+        print(len(solutions[i].moves))
+        for j in range(len(solutions)):
+
+            if len(solutions[j].moves) < len(solutions[lowest_value_index].moves):
+                lowest_value_index = j 
+
+    return solutions[lowest_value_index].moves
+
 # ============================================== A.I. FUNCTIONS ==============================================
 def nextMove(algorithm, state):
     possibleMoves = []
@@ -267,6 +308,8 @@ def nextMove(algorithm, state):
     elif algorithm == "idfs":      # iterative depth search
         possibleMoves.reverse()  
         compareStatesIDFS(possibleMoves)
+    elif algorithm == "astar":     #astar
+        compareStatesAstar(possibleMoves)
 
 def findSolution(state, algorithm):
 
@@ -274,6 +317,8 @@ def findSolution(state, algorithm):
     global queue
     global visited
     global run2
+
+    #global solutions
 
     while run2:
 
@@ -304,12 +349,18 @@ def findSolution(state, algorithm):
         if algorithm != "greedy":
             queue.remove(queue[0])
 
-        print(len(state.moves))
+        #print(len(state.moves))
 
         # break condition
         if not run:
-            print(solution.moves)
-            break
+
+            #astar
+            if args.algorithm == 'astar':
+                print(len(solutions))
+                break
+            else:
+                print(solution.moves)
+                break
 
 
 
@@ -337,7 +388,7 @@ visited = []
 # current game state
 state = State(level)
 
-queue = []
+#queue = []
 
 # queue with nodes
 if args.algorithm == "greedy":
@@ -443,7 +494,12 @@ else:
     clock = pygame.time.Clock()
 
     state.level = Level(l)
-    state.moves = solution.moves
+
+    if args.algorithm == "astar":
+        state.moves = calculateMinimumSolution()
+        print(state.moves)
+    else:
+        state.moves = solution.moves
 
     while True:
         nextPlay = pygame.Vector2(0, 0)
