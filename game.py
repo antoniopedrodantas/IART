@@ -223,30 +223,37 @@ def nextMove(algorithm, state):
     # is it left?
     movement1 = pygame.Vector2(-25, 0)
     if calculateGameState(movement1, tmp1):
-        tmp1.addMove("left")
         if not tmp1 == state:
+            tmp1.addMove("left")
             possibleMoves.append(tmp1)
+        else:
+            print("yey")
 
     # is it right?
     movement2 = pygame.Vector2(25, 0)
     if calculateGameState(movement2, tmp2):
-        tmp2.addMove("right")
         if not tmp2 == state:
+            tmp2.addMove("right")
             possibleMoves.append(tmp2)
+        else:
+            print("yey")
 
     # is it up?
     movement3 = pygame.Vector2(0, -25)
     if calculateGameState(movement3, tmp3):
-        tmp3.addMove("up")
         if not tmp3 == state:
+            tmp3.addMove("up")
             possibleMoves.append(tmp3)
+        else:
+            print("yey")
 
     # is it down?
     movement4 = pygame.Vector2(0, 25)
     if calculateGameState(movement4, tmp4):
-        tmp4.addMove("down")
         if not tmp4 == state:
+            tmp4.addMove("down")
             possibleMoves.append(tmp4)
+        else: print("yey")
 
     #puts moves on queue based on algorithm
     if algorithm == "bfs":         #breadth-first
