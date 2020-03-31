@@ -132,14 +132,14 @@ def calculateGameState(movement, st):
                     run2 = False
                     run = False
                 else:
-                    if args.algorithm == "astar":
-                        solution = st
-                        solutions.append(solution)
-                        if len(solutions) > 5:
-                            run = False
-                    else:
-                        run = False
-                        solution = st
+                    #if args.algorithm == "astar":
+                        #solution = st
+                        #solutions.append(solution)
+                        #if len(solutions) > 50:
+                            #run = False
+                    #else:
+                    run = False
+                    solution = st
 
             return True
 
@@ -243,17 +243,17 @@ def compareStatesAstar(possibleMoves):
         run = False
     else:
         for s in temporary:
-            queue.append(s)
+            queue.put(s)
 
 def calculateMinimumSolution():
 
     lowest_value_index = 0
 
-    for i in range(len(solutions)):
-        for j in range(len(solutions)):
 
-            if len(solutions[j].moves) < len(solutions[lowest_value_index].moves):
-                lowest_value_index = j 
+    for j in range(len(solutions)):
+
+        if len(solutions[j].moves) < len(solutions[lowest_value_index].moves):
+            lowest_value_index = j 
 
     return solutions[lowest_value_index].moves
 
@@ -310,7 +310,8 @@ def nextMove(algorithm, state):
         possibleMoves.reverse()  
         compareStatesIDFS(possibleMoves)
     elif algorithm == "astar":     #astar
-        compareStatesAstar(possibleMoves)
+        #compareStatesAstar(possibleMoves)
+        compareStatesGreedy(possibleMoves)
 
 def findSolution(state, algorithm):
 
@@ -325,18 +326,18 @@ def findSolution(state, algorithm):
 
 
         if algorithm == "idfs" and len(queue) == 0:
-            queue = [State(Level(l))]
+            queue = [State(Level(l), algorithm)]
             visited = []
             max_depth = max_depth + 10
             print("\n Retrying idfs with new depth limit: ",  max_depth, "\n")
 
-        if algorithm == "greedy":
+        if algorithm == "greedy" or algorithm == "astar":
             state = queue.get()
         else:
             state = queue[0]
 
         # add node to already visited
-        if algorithm == "greedy":
+        if algorithm == "greedy" or algorithm == "astar":
             visited.append(state)
         else:
             visited.append(queue[0])
@@ -345,7 +346,7 @@ def findSolution(state, algorithm):
         nextMove(algorithm, state)
 
         # remove the first queue element
-        if algorithm != "greedy":
+        if algorithm != "greedy" and algorithm != "astar":
             queue.remove(queue[0])
 
 
@@ -353,12 +354,11 @@ def findSolution(state, algorithm):
         if not run:
 
             #astar
-            if args.algorithm == 'astar':
-                print(len(solutions))
-                break
-            else:
-                print(solution.moves)
-                break
+            #if args.algorithm == 'astar':
+                #break
+            #else:
+            print(solution.moves)
+            break
 
 
 def usage():
@@ -410,12 +410,12 @@ level = Level(l)
 visited = []
 
 # current game state
-state = State(level)
+state = State(level, args.algorithm)
 
 #queue = []
 
 # queue with nodes
-if args.algorithm == "greedy":
+if args.algorithm == "greedy" or args.algorithm == "astar":
     queue = Q.PriorityQueue()
     queue.put(state)
 else:
@@ -528,11 +528,11 @@ Showing solution on screen!""")
 
     state.level = Level(l)
 
-    if args.algorithm == "astar":
-        state.moves = calculateMinimumSolution()
-        print(state.moves)
-    else:
-        state.moves = solution.moves
+    #if args.algorithm == "astar":
+        #state.moves = calculateMinimumSolution()
+        #print(state.moves)
+    #else:
+    state.moves = solution.moves
 
     while True:
         nextPlay = pygame.Vector2(0, 0)
