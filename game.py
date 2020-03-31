@@ -1,6 +1,7 @@
 import pygame
 import argparse
 import math
+import time
 
 from sys import exit
 from copy import deepcopy
@@ -234,8 +235,6 @@ def nextMove(algorithm, state):
         if not tmp1 == state:
             tmp1.addMove("left")
             possibleMoves.append(tmp1)
-        else:
-            print("yey")
 
     # is it right?
     movement2 = pygame.Vector2(25, 0)
@@ -243,8 +242,6 @@ def nextMove(algorithm, state):
         if not tmp2 == state:
             tmp2.addMove("right")
             possibleMoves.append(tmp2)
-        else:
-            print("yey")
 
     # is it up?
     movement3 = pygame.Vector2(0, -25)
@@ -252,8 +249,6 @@ def nextMove(algorithm, state):
         if not tmp3 == state:
             tmp3.addMove("up")
             possibleMoves.append(tmp3)
-        else:
-            print("yey")
 
     # is it down?
     movement4 = pygame.Vector2(0, 25)
@@ -261,7 +256,6 @@ def nextMove(algorithm, state):
         if not tmp4 == state:
             tmp4.addMove("down")
             possibleMoves.append(tmp4)
-        else: print("yey")
 
     #puts moves on queue based on algorithm
     if algorithm == "bfs":         #breadth-first
@@ -311,7 +305,6 @@ def findSolution(state, algorithm):
         if algorithm != "greedy":
             queue.remove(queue[0])
 
-        print(len(state.moves))
 
         # break condition
         if not run:
@@ -319,6 +312,26 @@ def findSolution(state, algorithm):
             break
 
 
+def usage():
+    print("""
+Invalid arguments!
+        
+    Usage if you wish to play a level:
+        > python3 game.py human <level>
+        (where:
+            <level> is a integer from 0 to 5)
+        
+    Usage if you wish the AI to solve a level:
+        > python3 game.py ai <level> -al <algorithm>
+        (where:
+            <level> ia a integer from 0 to 5
+            <algorithm> is one of the folowing algorithms:
+                - "bfs" -> breadth.first search
+                - "dfs" -> depth-first search
+                - "idfs" -> iterative depth-first search
+                - "greedy" -> greedy algorithm
+                - "astar" -> A* algorithm)"""
+    )
 
 # # ============================================== MAIN SCRIPT ==============================================
 
@@ -333,6 +346,12 @@ parser.add_argument('level', type=int, help='Game level')
 parser.add_argument('-algorithm', type=str, help='Game algorithm', required= False)
 
 args = parser.parse_args()
+
+if not (args.mode == "human" or args.mode == "ai"):
+    usage()
+    exit()
+
+
 l = args.level
 
 # specifies the level
@@ -434,8 +453,14 @@ if args.mode == "human":
         
 # while loop
 else:
-
+    print("Solving this level using ", args.algorithm, "algorithm...\nThis shouldn't take long :)")
+    start = time.time()
     findSolution(state, args.algorithm)
+    end = time.time()
+    print("""
+Solution found!
+Showing solution on screen!""")
+    print("\nA solution was found in ", round(end - start, 4), " s.")
 
 
     #--------------------- Printing Solution --------------------#
