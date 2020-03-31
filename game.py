@@ -498,7 +498,8 @@ Solution found!
 Showing solution on screen!""")     
 
     print("\nA solution was found in ", round(end - start, 4), " s.")
-
+    print("I looked through", len(visited), "nodes.")
+    print("the solution has a cost of ", len(solution.moves), "(moves).")
 
     #--------------------- Printing Solution --------------------#
 
