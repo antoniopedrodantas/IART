@@ -48,7 +48,6 @@ def calculateGameState(movement, st):
     if st.level.finish.collidelist(st.level.boxes) != -1:
         return False
 
-    # FAZER QUE QUANDO O MOVIMENTO NAO FOI POSSIVEL SER REALIZADO A FUNCAO RETORNE FALSE. IRA AJUDAR NA OTIMIZACAO
     # checks if player does not go beyond arena boundaries
     if movement.x != 0 or movement.y != 0:
         rect = screen.get_rect().inflate(-6, -6)
@@ -132,12 +131,6 @@ def calculateGameState(movement, st):
                     run2 = False
                     run = False
                 else:
-                    #if args.algorithm == "astar":
-                        #solution = st
-                        #solutions.append(solution)
-                        #if len(solutions) > 50:
-                            #run = False
-                    #else:
                     run = False
                     solution = st
 
@@ -310,7 +303,6 @@ def nextMove(algorithm, state):
         possibleMoves.reverse()  
         compareStatesIDFS(possibleMoves)
     elif algorithm == "astar":     #astar
-        #compareStatesAstar(possibleMoves)
         compareStatesGreedy(possibleMoves)
 
 def findSolution(state, algorithm):
@@ -352,11 +344,6 @@ def findSolution(state, algorithm):
 
         # break condition
         if not run:
-
-            #astar
-            #if args.algorithm == 'astar':
-                #break
-            #else:
             print(solution.moves)
             break
 
