@@ -10,16 +10,17 @@ def manhattanDistance(s, start, finish):
     
 def getClosestBox(s):
 
+    if len(s.level.boxes) == 0:
+        return manhattanDistance(s, s.level.player, s.level.finish)
+
     lowest_value_index = 0
 
     for j in range(len(s.level.boxes)):
         if manhattanDistance(s, s.level.player, s.level.boxes[j]) < manhattanDistance(s, s.level.player, s.level.boxes[lowest_value_index]):
             lowest_value_index = j 
 
-    if len(s.level.boxes) == 0:
-        return manhattanDistance(s, s.level.player, s.level.finish)
-    else:
-        return manhattanDistance(s, s.level.boxes[lowest_value_index], s.level.finish)
+
+    return manhattanDistance(s, s.level.boxes[lowest_value_index], s.level.finish)
 
 class State:
     
