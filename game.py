@@ -311,8 +311,14 @@ def findSolution(state, algorithm):
     global queue
     global visited
     global run2
+    
+    if args.v:
+        # inits game
+        pygame.get_init()
 
-    #global solutions
+        # sets window caption
+        pygame.display.set_caption("Box World 2")
+
 
     while run2:
 
@@ -333,6 +339,15 @@ def findSolution(state, algorithm):
             visited.append(state)
         else:
             visited.append(queue[0])
+
+        if args.v:
+            # draws game state
+            drawGameState(state.level)
+
+            # Update the full Surface to the screen
+            pygame.display.flip()
+
+            screen.fill((0, 0, 0))
 
         # calculates next move
         nextMove(algorithm, state)
@@ -358,7 +373,7 @@ Invalid arguments!
             <level> is a integer from 0 to 5)
         
     Usage if you wish the AI to solve a level:
-        > python3 game.py ai <level> -al <algorithm>
+        > python3 game.py ai <level> -al <algorithm> -v <bool>
         (where:
             <level> ia a integer from 0 to 5
             <algorithm> is one of the folowing algorithms:
@@ -366,8 +381,24 @@ Invalid arguments!
                 - "dfs" -> depth-first search
                 - "idfs" -> iterative depth-first search
                 - "greedy" -> greedy algorithm
-                - "astar" -> A* algorithm)"""
+                - "astar" -> A* algorithm
+            <bool> is a boolean (1, true, 0, false,)
+                    this shows in which node the algorithm is
+                    in real time but it is very costly performance wise.
+                    Use it only in the lower levels that are quick to solve)
+            """
     )
+
+
+def str2bool(v):
+    if isinstance(v, bool):
+       return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
 # # ============================================== MAIN SCRIPT ==============================================
 
@@ -375,13 +406,18 @@ Invalid arguments!
 # initializes the screen 500x500
 screen = pygame.display.set_mode((500, 500))
 
+# Creates a clock object to keep track of time
+clock = pygame.time.Clock()
+
 # gets the level
 parser = argparse.ArgumentParser()
 parser.add_argument('mode', type=str, help='human/player')
 parser.add_argument('level', type=int, help='Game level')
 parser.add_argument('-algorithm', type=str, help='Game algorithm', required= False)
+parser.add_argument('-v', type=str2bool, required=False)
 
 args = parser.parse_args()
+
 
 if not (args.mode == "human" or args.mode == "ai"):
     usage()
@@ -398,8 +434,6 @@ visited = []
 
 # current game state
 state = State(level, args.algorithm)
-
-#queue = []
 
 # queue with nodes
 if args.algorithm == "greedy" or args.algorithm == "astar":
@@ -470,7 +504,7 @@ if args.mode == "human":
         # calculates next move
         calculateGameState(movement_player, state)
 
-        pygame.time.delay(80)
+        pygame.time.delay(85)
 
         # draws game state
         drawGameState(state.level)
@@ -489,7 +523,7 @@ if args.mode == "human":
         
 # while loop
 else:
-    print("Solving this level using ", args.algorithm, "algorithm...\nThis shouldn't take long :)")
+    print("Solving this level using ", args.algorithm, "algorithm...\nThis shouldn't take long :)\nYou can also put \"-v true\" in the comand arguments to see the search in real time at cost of some performance...\n")
     start = time.time()
     findSolution(state, args.algorithm)
     end = time.time()
@@ -499,25 +533,22 @@ Showing solution on screen!""")
 
     print("\nA solution was found in ", round(end - start, 4), " s.")
     print("I looked through", len(visited), "nodes.")
-    print("the solution has a cost of ", len(solution.moves), "(moves).")
+    print("The solution has a cost of", len(solution.moves), "(moves).")
 
     #--------------------- Printing Solution --------------------#
 
-    # inits game
-    pygame.get_init()
+    if not args.v:
+        # inits game
+        pygame.get_init()
 
-    # sets window caption
-    pygame.display.set_caption("Box World 2")
+        # sets window caption
+        pygame.display.set_caption("Box World 2")
 
-    # Creates a clock object to keep track of time
-    clock = pygame.time.Clock()
+        # Creates a clock object to keep track of time
+        clock = pygame.time.Clock()
 
     state.level = Level(l)
 
-    #if args.algorithm == "astar":
-        #state.moves = calculateMinimumSolution()
-        #print(state.moves)
-    #else:
     state.moves = solution.moves
 
     while True:

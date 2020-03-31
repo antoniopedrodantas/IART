@@ -13,13 +13,14 @@ You can easily install these two components here:
 
 On your shell or command prompt access the folder where these files are. Then input the following command
 
-__python3 game.py < mode > < level > <-al < algorithm > >__
-
+__python3 game.py < mode > < level > <-al < algorithm > > <-v < bool > >__
 * __< mode >__ here you choose between playing yourself or letting the AI complete the level (can be human or ai).
 
 * __< level >__ is the game level you want to play.
 
-* __< -al < algorithm > >__ if you chose ai on < mode > you may want to specify which algorithm will solve it (bfs, dfs, idfs, greedy, astar).
+* __< -al < algorithm > >__ if you chose ai on < mode > you need to specify which algorithm will solve it (bfs, dfs, idfs, greedy, astar).
+
+*  __< -v < bool > >__  this flag is optional. If you enable it you must follow it by a boolean (true, false, 0, 1, True, False). If true, this will show the nodes the algorithm is processing in real time while searching for the solution. Note: this comes at expense of performance thus, it is only recommended in the first levels
 
 Examples:
 
@@ -27,6 +28,10 @@ Examples:
 
 * game.py human 2
 
-* game.py ai 1 -al greedy
+* game.py ai 1 -al greedy -v false
 
 * game.py ai 2 -al idfs
+
+* game.py ai 3 -al astar -v true
+
+* game.py ai 4 -al dfs -v 1
