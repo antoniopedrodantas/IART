@@ -489,17 +489,15 @@ if args.mode == "human":
         
 # while loop
 else:
-    print("Solving this level using ", args.algorithm, "algorithm...\nThis shouldn't take too long :) (except on level 4)")
+    print("Solving this level using ", args.algorithm, "algorithm...\nThis shouldn't take long :)")
     start = time.time()
     findSolution(state, args.algorithm)
     end = time.time()
     print("""
 Solution found!
-Showing solution on screen!""")
+Showing solution on screen!""")     
+
     print("\nA solution was found in ", round(end - start, 4), " s.")
-    print("I looked through ", len(visited), "nodes.")
-    print("The cost of the solution is ", len(
-        solution.moves)," ( moves ).")
 
 
     #--------------------- Printing Solution --------------------#
@@ -536,7 +534,8 @@ Showing solution on screen!""")
         # Update the full Surface to the screen
         pygame.display.flip()
 
-        clock.tick(100)
+        # Run the program at 60 frames per second
+        clock.tick(60)
 
         screen.fill((0, 0, 0))
 
