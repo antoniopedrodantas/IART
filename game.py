@@ -335,16 +335,14 @@ def findSolution(state, algorithm):
         else:
             state = queue[0]
 
-
-        # calculates next move
-        nextMove(algorithm, state)
-
-
         # add node to already visited
         if algorithm == "greedy":
             visited.append(state)
         else:
             visited.append(queue[0])
+
+        # calculates next move
+        nextMove(algorithm, state)
 
         # remove the first queue element
         if algorithm != "greedy":

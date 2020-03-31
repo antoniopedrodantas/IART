@@ -261,6 +261,9 @@ class Level:
 
         return self.player == other.player and self.boxes == other.boxes and self.iceBoxes == other.iceBoxes and self.holes == other.holes
 
+    def __nq__(self, other):
+
+        return self.player == other.player and self.boxes == other.boxes and self.iceBoxes == other.iceBoxes and self.holes == other.holes
 
 
 
