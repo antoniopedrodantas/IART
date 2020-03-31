@@ -130,6 +130,7 @@ def calculateGameState(movement, st):
                 if args.mode == "human":
                     print(st.moves)
                     run2 = False
+                    run = False
                 else:
                     if args.algorithm == "astar":
                         solution = st
@@ -249,7 +250,6 @@ def calculateMinimumSolution():
     lowest_value_index = 0
 
     for i in range(len(solutions)):
-        print(len(solutions[i].moves))
         for j in range(len(solutions)):
 
             if len(solutions[j].moves) < len(solutions[lowest_value_index].moves):
@@ -328,7 +328,7 @@ def findSolution(state, algorithm):
             queue = [State(Level(l))]
             visited = []
             max_depth = max_depth + 10
-            print("\n Retrying idfs with new depth limit: ",  max_depth)
+            print("\n Retrying idfs with new depth limit: ",  max_depth, "\n")
 
         if algorithm == "greedy":
             state = queue.get()
