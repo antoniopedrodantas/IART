@@ -44,7 +44,7 @@ def calculateGameState(movement, st):
     global solution
     global run2
 
-    #cheks if it is impossible to complete
+    # cheks if it is impossible to complete
     if st.level.finish.collidelist(st.level.boxes) != -1:
         return False
 
@@ -60,7 +60,8 @@ def calculateGameState(movement, st):
             ice_moved = moved
 
         # if the player is inside the arena he can move
-        if moved.collidelist(st.level.arena) == -1: #and box_moved.collidelist(st.level.arena) == -1
+        # and box_moved.collidelist(st.level.arena) == -1
+        if moved.collidelist(st.level.arena) == -1:
             st.level.player = moved
 
             for box in st.level.boxes:
@@ -89,8 +90,8 @@ def calculateGameState(movement, st):
                         ice.y += movement.y
 
                     ice.x += movement.x
-                    ice.y += movement.y    
-                        
+                    ice.y += movement.y
+
                     if ice.collidelist(st.level.holes) != -1:
                         st.level.player.x -= movement.x
                         st.level.player.y -= movement.y
@@ -107,8 +108,6 @@ def calculateGameState(movement, st):
                     # return False
                     st.level.player.x -= movement.x
                     st.level.player.y -= movement.y
-
-            
 
             del_holes = st.level.holes
             del_boxes = st.level.boxes
@@ -145,7 +144,8 @@ def drawGameState(level):
 
     # draws arena
     for wall in level.arena:
-        pygame.draw.rect(screen, (0, 255, 0), (wall.x, wall.y, wall.width, wall.height))
+        pygame.draw.rect(screen, (0, 255, 0),
+                         (wall.x, wall.y, wall.width, wall.height))
 
     # draws finish
     pygame.draw.rect(screen, pygame.Color('blue'), level.finish)
@@ -216,7 +216,7 @@ def compareStatesGreedy(possibleMoves):
             if st1.level == st2.level:
                 flag = False
         if flag:
-            queue.put(st1)     
+            queue.put(st1)
 
 
 # ============================================== A - STAR ==============================================
@@ -231,26 +231,28 @@ def compareStatesAstar(possibleMoves):
                 flag = False
         if flag:
             temporary.append(st1)
-    
+
     if len(temporary) == 0:
         run = False
     else:
         for s in temporary:
             queue.put(s)
 
+
 def calculateMinimumSolution():
 
     lowest_value_index = 0
 
-
     for j in range(len(solutions)):
 
         if len(solutions[j].moves) < len(solutions[lowest_value_index].moves):
-            lowest_value_index = j 
+            lowest_value_index = j
 
     return solutions[lowest_value_index].moves
 
 # ============================================== A.I. FUNCTIONS ==============================================
+
+
 def nextMove(algorithm, state):
     possibleMoves = []
 
@@ -291,19 +293,20 @@ def nextMove(algorithm, state):
             tmp4.addMove("down")
             possibleMoves.append(tmp4)
 
-    #puts moves on queue based on algorithm
-    if algorithm == "bfs":         #breadth-first
+    # puts moves on queue based on algorithm
+    if algorithm == "bfs":  # breadth-first
         compareStatesBFS(possibleMoves)
-    elif algorithm == "dfs":       #depth-first search
+    elif algorithm == "dfs":  # depth-first search
         possibleMoves.reverse()
         compareStatesDFS(possibleMoves)
-    elif algorithm == "greedy":    #greedy
+    elif algorithm == "greedy":  # greedy
         compareStatesGreedy(possibleMoves)
     elif algorithm == "idfs":      # iterative depth search
-        possibleMoves.reverse()  
+        possibleMoves.reverse()
         compareStatesIDFS(possibleMoves)
-    elif algorithm == "astar":     #astar
+    elif algorithm == "astar":  # astar
         compareStatesGreedy(possibleMoves)
+
 
 def findSolution(state, algorithm):
 
@@ -311,7 +314,7 @@ def findSolution(state, algorithm):
     global queue
     global visited
     global run2
-    
+
     if args.v:
         # inits game
         pygame.get_init()
@@ -319,9 +322,7 @@ def findSolution(state, algorithm):
         # sets window caption
         pygame.display.set_caption("Box World 2")
 
-
     while run2:
-
 
         if algorithm == "idfs" and len(queue) == 0:
             queue = [State(Level(l), algorithm)]
@@ -356,7 +357,6 @@ def findSolution(state, algorithm):
         if algorithm != "greedy" and algorithm != "astar":
             queue.remove(queue[0])
 
-
         # break condition
         if not run:
             print(solution.moves)
@@ -387,12 +387,12 @@ Invalid arguments!
                     in real time but it is very costly performance wise.
                     Use it only in the lower levels that are quick to solve)
             """
-    )
+          )
 
 
 def str2bool(v):
     if isinstance(v, bool):
-       return v
+        return v
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
         return True
     elif v.lower() in ('no', 'false', 'f', 'n', '0'):
@@ -413,7 +413,8 @@ clock = pygame.time.Clock()
 parser = argparse.ArgumentParser()
 parser.add_argument('mode', type=str, help='human/player')
 parser.add_argument('level', type=int, help='Game level')
-parser.add_argument('-algorithm', type=str, help='Game algorithm', required= False)
+parser.add_argument('-algorithm', type=str,
+                    help='Game algorithm', required=False)
 parser.add_argument('-v', type=str2bool, required=False)
 
 args = parser.parse_args()
@@ -476,11 +477,11 @@ if args.mode == "human":
         if keys[pygame.K_ESCAPE]:
             run = False
 
-        #creates movement vector that is later used for checking arena boundaries
+        # creates movement vector that is later used for checking arena boundaries
         movement_player = pygame.Vector2(0, 0)
 
         if keys[pygame.K_LEFT]:
-            movement_player= move(movement_player, "left")
+            movement_player = move(movement_player, "left")
 
         if keys[pygame.K_RIGHT]:
             movement_player = move(movement_player, "right")
@@ -499,7 +500,6 @@ if args.mode == "human":
 
             findSolution(state, "idfs")
             state = State(Level(l))
-
 
         # calculates next move
         calculateGameState(movement_player, state)
@@ -520,16 +520,17 @@ if args.mode == "human":
         # break condition
         if not run:
             break
-        
+
 # while loop
 else:
-    print("Solving this level using ", args.algorithm, "algorithm...\nThis shouldn't take long :)\nYou can also put \"-v true\" in the comand arguments to see the search in real time at cost of some performance...\n")
+    print("Solving this level using ", args.algorithm,
+          "algorithm...\nThis shouldn't take long :)\nYou can also put \"-v true\" in the comand arguments to see the search in real time at cost of some performance...\n")
     start = time.time()
     findSolution(state, args.algorithm)
     end = time.time()
     print("""
 Solution found!
-Showing solution on screen!""")     
+Showing solution on screen!""")
 
     print("\nA solution was found in ", round(end - start, 4), " s.")
     print("I looked through", len(visited), "nodes.")
