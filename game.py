@@ -2,6 +2,7 @@ import pygame
 import argparse
 import math
 import time
+import qlearn
 
 from sys import exit
 from copy import deepcopy
@@ -140,7 +141,7 @@ def drawGameState(level):
 
     # draws floor
     for tile in level.floor:
-        pygame.draw.rect(screen, pygame.Color('pink'), tile)
+        pygame.draw.rect(screen, pygame.Color('pink'), tile[0])
 
     # draws arena
     for wall in level.arena:
@@ -265,12 +266,15 @@ def nextMove(algorithm, state):
 
     tmp4 = deepcopy(state)
 
+    pM = []
+
     # is it left?
     movement1 = pygame.Vector2(-25, 0)
     if calculateGameState(movement1, tmp1):
         if not tmp1 == state:
             tmp1.addMove("left")
             possibleMoves.append(tmp1)
+            pM.append("left")
 
     # is it right?
     movement2 = pygame.Vector2(25, 0)
@@ -278,6 +282,7 @@ def nextMove(algorithm, state):
         if not tmp2 == state:
             tmp2.addMove("right")
             possibleMoves.append(tmp2)
+            pM.append("right")
 
     # is it up?
     movement3 = pygame.Vector2(0, -25)
@@ -285,6 +290,7 @@ def nextMove(algorithm, state):
         if not tmp3 == state:
             tmp3.addMove("up")
             possibleMoves.append(tmp3)
+            pM.append("up")
 
     # is it down?
     movement4 = pygame.Vector2(0, 25)
@@ -292,6 +298,7 @@ def nextMove(algorithm, state):
         if not tmp4 == state:
             tmp4.addMove("down")
             possibleMoves.append(tmp4)
+            pM.append("down")
 
     # puts moves on queue based on algorithm
     if algorithm == "bfs":  # breadth-first
@@ -306,6 +313,8 @@ def nextMove(algorithm, state):
         compareStatesIDFS(possibleMoves)
     elif algorithm == "astar":  # astar
         compareStatesGreedy(possibleMoves)
+    elif algorithm == "qlearning":  #qlearning
+        return pM
 
 
 def findSolution(state, algorithm):
@@ -448,7 +457,6 @@ else:
 # creates movement
 movement = pygame.Vector2(0, 0)
 
-
 if args.mode == "human":
 
     # inits game
@@ -526,56 +534,115 @@ else:
     print("Solving this level using ", args.algorithm,
           "algorithm...\nThis shouldn't take long :)\nYou can also put \"-v true\" in the comand arguments to see the search in real time at cost of some performance...\n")
     start = time.time()
-    findSolution(state, args.algorithm)
-    end = time.time()
-    print("""
-Solution found!
-Showing solution on screen!""")
 
-    print("\nA solution was found in ", round(end - start, 4), " s.")
-    print("I looked through", len(visited), "nodes.")
-    print("The solution has a cost of", len(solution.moves), "(moves).")
+    if args.algorithm == "qlearning":
+        
+        num_episodes = 200
 
-    #--------------------- Printing Solution --------------------#
+        for episode in range(num_episodes):
+            # resets level and rewards
+            state = State(Level(l), "qlearning")
+            rewards_current_episode = 0
 
-    if not args.v:
-        # inits game
-        pygame.get_init()
+            max_steps_per_episode = 20
+            for steps in range(max_steps_per_episode):
+                
+                # sees possible moves
+                possibleMoves = nextMove("qlearning", state)
+                qValues = []
 
-        # sets window caption
-        pygame.display.set_caption("Box World 2")
+                # gets Q-Table values
+                for move in possibleMoves:
+                    qValues.append([qlearn.findQvalue(state, move), move])
 
-        # Creates a clock object to keep track of time
-        clock = pygame.time.Clock()
+                # finds best move
+                min = 100
+                minQvalue = [0, ""]
+                for value in qValues:
+                    if min > value[0]:
+                        min = value[0]
+                        minQvalue = value
 
-    state.level = Level(l)
+                # calculates reward
+                reward = 0
+                if state.level.player.colliderect(state.level.finish):
+                    reward = 10
+                else:
+                    reward = -0.1
+                
+                # updates Q-Table
+                state = qlearn.updateQtable(state, minQvalue[1], reward)
 
-    state.moves = solution.moves
+                movement_player = pygame.Vector2(0, 0)
+                if minQvalue[1] == "left":
+                    movement_player.x -= 25
+                if minQvalue[1] == "right":
+                    movement_player.x += 25
+                if minQvalue[1] == "up":
+                    movement_player.y -= 25
+                if minQvalue[1] == "down":
+                    movement_player.y += 25
 
-    while True:
-        nextPlay = pygame.Vector2(0, 0)
+                calculateGameState(movement_player, state)
 
-        currentMove = state.moves[0]
-        nextPlay = move(nextPlay, currentMove)
-        calculateGameState(nextPlay, state)
 
-        pygame.time.delay(500)
+        for tile in state.level.floor:
+            print(tile[1], " ", tile[2], " ", tile[3], " ", tile[4])
 
-        # draws game state
-        drawGameState(state.level)
+        
 
-        # Update the full Surface to the screen
-        pygame.display.flip()
+    
+    else:
+        findSolution(state, args.algorithm)
+        end = time.time()
+        print("""
+                Solution found!
+                Showing solution on screen!""")
 
-        # Run the program at 60 frames per second
-        clock.tick(60)
+        print("\nA solution was found in ", round(end - start, 4), " s.")
+        print("I looked through", len(visited), "nodes.")
+        print("The solution has a cost of", len(solution.moves), "(moves).")
 
-        screen.fill((0, 0, 0))
+        #--------------------- Printing Solution --------------------#
 
-        state.moves.pop(0)
+        if not args.v:
+            # inits game
+            pygame.get_init()
 
-        if not state.moves:
-            break
+            # sets window caption
+            pygame.display.set_caption("Box World 2")
+
+            # Creates a clock object to keep track of time
+            clock = pygame.time.Clock()
+
+        state.level = Level(l)
+
+        state.moves = solution.moves
+
+        while True:
+            nextPlay = pygame.Vector2(0, 0)
+
+            currentMove = state.moves[0]
+            nextPlay = move(nextPlay, currentMove)
+            calculateGameState(nextPlay, state)
+
+            pygame.time.delay(500)
+
+            # draws game state
+            drawGameState(state.level)
+
+            # Update the full Surface to the screen
+            pygame.display.flip()
+
+            # Run the program at 60 frames per second
+            clock.tick(60)
+
+            screen.fill((0, 0, 0))
+
+            state.moves.pop(0)
+
+            if not state.moves:
+                break
 
 
 pygame.quit()
