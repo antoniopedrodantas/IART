@@ -2,22 +2,22 @@ def findQvalue(state, move):
     
     if move == "left":
         for tile in state.level.floor:
-            if (state.level.player.x - 25) == tile[0].x and state.level.player.y == tile[0].y:
+            if state.level.player.x == tile[0].x and state.level.player.y == tile[0].y:
                 return tile[1]
 
     elif move == "right":
         for tile in state.level.floor:
-            if (state.level.player.x + 25) == tile[0].x and state.level.player.y == tile[0].y:
+            if state.level.player.x == tile[0].x and state.level.player.y == tile[0].y:
                 return tile[2]
 
     elif move == "up":
         for tile in state.level.floor:
-            if state.level.player.x == tile[0].x and (state.level.player.y - 25) == tile[0].y:
+            if state.level.player.x == tile[0].x and state.level.player.y == tile[0].y:
                 return tile[3]
 
     elif move == "down":
         for tile in state.level.floor:
-            if state.level.player.x ==tile[0].x and (state.level.player.y + 25) ==tile[0].y:
+            if state.level.player.x ==tile[0].x and state.level.player.y ==tile[0].y:
                 return tile[4]
 
 

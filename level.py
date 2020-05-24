@@ -8,7 +8,7 @@ class Level:
         
         # level 0
         if(i == 0):
-            self.player = pygame.Rect(125, 125, 25, 25)
+            self.player = pygame.Rect(100, 100, 25, 25)
 
             self.boxes = []
 
