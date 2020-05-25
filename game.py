@@ -539,7 +539,8 @@ else:
 
     if args.algorithm == "qlearning":
         
-        num_episodes = 10
+        num_episodes = 20
+        
         state = State(Level(l), "qlearning")
         cmpState = State(Level(l), "qlearning")
         
@@ -552,8 +553,21 @@ else:
 
 
 
-            max_steps_per_episode = 50
+            max_steps_per_episode = 20
             for steps in range(max_steps_per_episode):
+
+                pygame.time.delay(50)
+
+                # draws game state
+                drawGameState(state.level)
+
+                # Update the full Surface to the screen
+                pygame.display.flip()
+
+                # Run the program at 60 frames per second
+                clock.tick(60)
+
+                screen.fill((0, 0, 0))
                 
                 # sees possible moves
                 possibleMoves = nextMove("qlearning", state)
@@ -622,18 +636,7 @@ else:
                 if state.level.player.colliderect(state.level.finish):
                     break
 
-                pygame.time.delay(100)
-
-                # draws game state
-                drawGameState(state.level)
-
-                # Update the full Surface to the screen
-                pygame.display.flip()
-
-                # Run the program at 60 frames per second
-                clock.tick(60)
-
-                screen.fill((0, 0, 0))
+                
 
 
         print("Finished training, printing Q-Table:")
