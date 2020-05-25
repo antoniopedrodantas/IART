@@ -539,8 +539,8 @@ else:
 
     if args.algorithm == "qlearning":
         
-        num_episodes = 20
-        
+        num_episodes = 50
+
         state = State(Level(l), "qlearning")
         cmpState = State(Level(l), "qlearning")
         
@@ -549,11 +549,12 @@ else:
             # resets level and rewards
             #state = State(Level(l), "qlearning")
             #might need to change later
-            state.level.player = cmpState.level.player 
+            state.level.player = cmpState.level.player
+            state.level.boxes = cmpState.level.boxes 
 
 
 
-            max_steps_per_episode = 20
+            max_steps_per_episode = 15
             for steps in range(max_steps_per_episode):
 
                 pygame.time.delay(50)
