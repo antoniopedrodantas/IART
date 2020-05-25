@@ -22,11 +22,9 @@ def findQvalue(state, move):
 
 
 
-def updateQtable(state, move, reward):
+def updateQtable(state, move, reward, alpha):
 
-    alpha = 0.8
-    gamma = 0.3
-    t = 1
+    gamma = 0.8
     
     if move == "left":
         for tile in state.level.floor:

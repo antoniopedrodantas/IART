@@ -542,8 +542,10 @@ else:
     if args.algorithm == "qlearning":
         
         num_episodes = 150
-
+        alpha = 1
         epsilon = 0.2
+
+        lastMove = ""
 
         state = State(Level(l), "qlearning")
         cmpState = State(Level(l), "qlearning")
@@ -556,6 +558,7 @@ else:
             state.level.player = cmpState.level.player
             state.level.boxes = deepcopy (cmpState.level.boxes)
 
+            t = 1
 
 
             max_steps_per_episode = 20
@@ -611,32 +614,39 @@ else:
                             max = value[0]
                             maxQvalue = deepcopy(value)
 
-                
                 # calculates reward
                 if maxQvalue[1] == "left":
                     if (state.level.player.x - 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
                         reward = 10
+                    elif lastMove =="rigth":
+                        reward = -50
                     else:
                         reward = -0.1
-                if maxQvalue[1] == "right":
+                elif maxQvalue[1] == "right":
                     if (state.level.player.x + 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
                         reward = 10
+                    elif lastMove =="left":
+                        reward = -50
                     else:
                         reward = -0.1
-                if maxQvalue[1] == "up":
+                elif maxQvalue[1] == "up":
                     if state.level.player.x == state.level.finish.x and (state.level.player.y - 25) == state.level.finish.y :
                         reward = 10
+                    elif lastMove =="down":
+                        reward = -50
                     else:
                         reward = -0.1
-                if maxQvalue[1] == "down":
+                elif maxQvalue[1] == "down":
                     if state.level.player.x == state.level.finish.x and (state.level.player.y + 25) == state.level.finish.y :
                         reward = 10
+                    elif lastMove =="up":
+                        reward = -50
                     else:
                         reward = -0.1
                 
                 
                 # updates Q-Table
-                state = qlearn.updateQtable(state, maxQvalue[1], reward)
+                state = qlearn.updateQtable(state, maxQvalue[1], reward, alpha)
 
                 
                 movement_player = pygame.Vector2(0, 0)
@@ -655,6 +665,10 @@ else:
                 # if it reaches the exit resets level
                 if state.level.player.colliderect(state.level.finish):
                     break
+                t += 1.0
+
+                alpha = pow(t, -0.1)
+
 
                 
 
@@ -691,6 +705,8 @@ else:
             maxQvalue = [0, ""]
             qValues = []
 
+            
+
             # gets Q-Table values
             for move in possibleMoves:
                 qValues.append([qlearn.findQvalue(state, move), move])
@@ -707,12 +723,16 @@ else:
             movement_player = pygame.Vector2(0, 0)
             if maxQvalue[1] == "left":
                 movement_player.x -= 25
+                lastMove = "left"
             if maxQvalue[1] == "right":
                 movement_player.x += 25
+                lastMove = "right"
             if maxQvalue[1] == "up":
                 movement_player.y -= 25
+                lastMove = "up"
             if maxQvalue[1] == "down":
                 movement_player.y += 25
+                lastMove = "down"
 
             # updates player position
             calculateGameState(movement_player, state)

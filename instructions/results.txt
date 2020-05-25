@@ -1,0 +1,40 @@
+1
+-BFS       257 nodes,  	   10 moves, 	   0.1566 s
+-DFS      3259 nodes, 	   16 moves, 	   6.7290 s
+-IDFS       40 nodes,      10 moves,       0.0349 s
+-GREEDY     12 nodes,      10 moves,       0.0150 s  *
+-ASTAR    6895 nodes,      12 moves,   	  32.8644 s
+
+2
+-BFS       1950 nodes,     15 moves, 	   3.3151 s
+-DFS       ? 
+-IDFS      1162 nodes,    21 moves,       1.3743 s
+-GREEDY     1021nodes,      27moves,       1.2616 s  *
+_ASTAR	    268 nodes,     35 moves,       0.2882 s
+
+3
+-BFS       1959 nodes,     19 moves, 	   2.7746 s
+-DFS       1165 nodes,     31 moves,       1.1619
+-IDFS       617 nodes,     31 moves,       0.9804 s
+-GREEDY    1051 nodes,     19 moves,       1.0223 s
+-ASTAR      534 nodes,     19 moves,       0.6164 s  *
+
+
+4
+-BFS       ?
+-DFS       2930 nodes,     99 moves,       7.9776 s   *
+-IDFS     13134 nodes,     31 moves,     130.8134 s
+-GREEDY    4435 nodes,     39 moves,      17.6609 s
+-ASTAR     7780 nodes,     19 moves,      47.2529 s
+
+
+5
+-BFS        13872 nodes,      91 moves,     102.9507 s
+-DFS        11279 nodes,     197 moves,      78.3463 s
+-IDFS        7039 nodes,     105 moves,     165.0983 s
+-GREEDY     10423 nodes,     133 moves,      66.911s s
+-ASTAR       4201 nodes,      93 moves,      10.7476 s   *
+
+
+
+6- Nenhum dos algoritmos encontra a solução num tempo adequado
