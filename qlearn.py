@@ -24,8 +24,8 @@ def findQvalue(state, move):
 
 def updateQtable(state, move, reward):
 
-    discount_rate = 0.3
-    alpha = 1
+    alpha = 0.8
+    gamma = 0.8
     t = 1
     
     if move == "left":
@@ -47,7 +47,8 @@ def updateQtable(state, move, reward):
                     if max < value:
                         max = value
 
-                tile[1] = tile[1] + (reward + max)
+                tile[1] = tile[1] + alpha * (reward + gamma * max - tile[1])
+                #tile[1] = tile[1] + (reward + max)
                 return state
                 
 
@@ -70,7 +71,8 @@ def updateQtable(state, move, reward):
                     if max < value:
                         max = value
 
-                tile[2] = tile[2] + (reward + max)
+                tile[2] = tile[2] + alpha * (reward + gamma * max - tile[2])
+                #tile[2] = tile[2] + (reward + max)
                 return state
                 
 
@@ -93,7 +95,8 @@ def updateQtable(state, move, reward):
                     if max < value:
                         max = value
 
-                tile[3] = tile[3] + (reward + max)
+                tile[3] = tile[3] + alpha * (reward + gamma * max - tile[3])
+                #tile[3] = tile[3] + (reward + max)
                 return state
                 
 
@@ -116,7 +119,8 @@ def updateQtable(state, move, reward):
                     if max < value:
                         max = value
 
-                tile[4] = tile[4] + (reward + max)
+                tile[4] = tile[4] + alpha * (reward + gamma * max - tile[4])
+                #tile[4] = tile[4] + (reward + max)
                 return state
 
     

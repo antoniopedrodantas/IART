@@ -47,7 +47,8 @@ def calculateGameState(movement, st):
 
     # cheks if it is impossible to complete
     if st.level.finish.collidelist(st.level.boxes) != -1:
-        return False
+        if args.algorithm != "qlearning":
+            return False
 
     # checks if player does not go beyond arena boundaries
     if movement.x != 0 or movement.y != 0:
@@ -539,7 +540,7 @@ else:
 
     if args.algorithm == "qlearning":
         
-        num_episodes = 50
+        num_episodes = 100
 
         state = State(Level(l), "qlearning")
         cmpState = State(Level(l), "qlearning")
@@ -550,14 +551,17 @@ else:
             #state = State(Level(l), "qlearning")
             #might need to change later
             state.level.player = cmpState.level.player
-            state.level.boxes = cmpState.level.boxes 
+            state.level.boxes = deepcopy (cmpState.level.boxes)
 
 
 
-            max_steps_per_episode = 15
+            max_steps_per_episode = 20
             for steps in range(max_steps_per_episode):
 
-                pygame.time.delay(50)
+                distance = manhattanDistance(state, state.level.player, state.level.finish)
+                
+
+                pygame.time.delay(0)
 
                 # draws game state
                 drawGameState(state.level)
@@ -593,25 +597,49 @@ else:
                 #else:
                     #reward = -0.1
 
+                new_distance = 0
+                x_axis = 0
+                y_axis = 0
+                if maxQvalue[1] == "left":
+                    x_axis = -25
+                elif maxQvalue[1] == "right":
+                    x_axis = 25
+                elif maxQvalue[1] == "up":
+                    y_axis = -25
+                elif maxQvalue[1] == "down":
+                    y_axis = 25
+                
+                for new_tile in state.level.floor:
+                    if (state.level.player.x + x_axis) == new_tile[0].x and (state.level.player.y + y_axis) == new_tile[0].y:
+                        new_distance = manhattanDistance(state, new_tile[0], state.level.finish)
+
                 # calculates reward
                 if maxQvalue[1] == "left":
                     if (state.level.player.x - 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
                         reward = 10
+                    elif new_distance < distance:
+                        reward = 0.1
                     else:
                         reward = -0.1
                 if maxQvalue[1] == "right":
                     if (state.level.player.x + 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
                         reward = 10
+                    elif new_distance < distance:
+                        reward = 0.1
                     else:
                         reward = -0.1
                 if maxQvalue[1] == "up":
                     if state.level.player.x == state.level.finish.x and (state.level.player.y - 25) == state.level.finish.y :
                         reward = 10
+                    elif new_distance < distance:
+                        reward = 0.1
                     else:
                         reward = -0.1
                 if maxQvalue[1] == "down":
                     if state.level.player.x == state.level.finish.x and (state.level.player.y + 25) == state.level.finish.y :
                         reward = 10
+                    elif new_distance < distance:
+                        reward = 0.1
                     else:
                         reward = -0.1
                 
@@ -619,7 +647,6 @@ else:
                 state = qlearn.updateQtable(state, maxQvalue[1], reward)
 
                 
-
                 movement_player = pygame.Vector2(0, 0)
                 if maxQvalue[1] == "left":
                     movement_player.x -= 25
@@ -642,7 +669,7 @@ else:
 
         print("Finished training, printing Q-Table:")
         for tile in state.level.floor:
-            print(tile[1], " ", tile[2], " ", tile[3], " ", tile[4])
+            print((tile[0]),"--" ,tile[1], " ", tile[2], " ", tile[3], " ", tile[4])
 
         
 
