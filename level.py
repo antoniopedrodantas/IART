@@ -62,12 +62,12 @@ class Level:
             self.player = pygame.Rect(300, 175, 25, 25)
 
             self.boxes = [
-                pygame.Rect(175, 150, 25, 25),
-                pygame.Rect(200, 175, 25, 25),
-                pygame.Rect(225, 200, 25, 25),
-                pygame.Rect(125, 150, 25, 25),
-                pygame.Rect(150, 175, 25, 25),
-                pygame.Rect(175, 200, 25, 25),
+                #pygame.Rect(175, 150, 25, 25),
+                #pygame.Rect(200, 175, 25, 25),
+                #pygame.Rect(225, 200, 25, 25),
+                #pygame.Rect(125, 150, 25, 25),
+                #pygame.Rect(150, 175, 25, 25),
+                #pygame.Rect(175, 200, 25, 25),
             ]
 
             self.iceBoxes = []

@@ -25,7 +25,7 @@ def findQvalue(state, move):
 def updateQtable(state, move, reward):
 
     alpha = 0.8
-    gamma = 0.8
+    gamma = 0.3
     t = 1
     
     if move == "left":
@@ -125,3 +125,60 @@ def updateQtable(state, move, reward):
 
     
                 
+def showSolution(state):
+
+    # ------------------------------------------------ from here --------------------------------
+
+    while True:
+
+        pygame.time.delay(100)
+
+        # draws game state
+        drawGameState(state.level)
+
+        # Update the full Surface to the screen
+        pygame.display.flip()
+
+        # Run the program at 60 frames per second
+        clock.tick(60)
+
+        screen.fill((0, 0, 0))
+        
+        # sees possible moves
+        possibleMoves = ["left", "right", "up", "down"]
+        
+        
+        maxQvalue = [0, ""]
+        qValues = []
+
+        # gets Q-Table values
+        for move in possibleMoves:
+            qValues.append([qlearn.findQvalue(state, move), move])
+
+        # finds best move
+        max = -10000
+        
+        for value in qValues:
+            if max < value[0]:
+                max = value[0]
+                maxQvalue = deepcopy(value)
+
+        
+        movement_player = pygame.Vector2(0, 0)
+        if maxQvalue[1] == "left":
+            movement_player.x -= 25
+        if maxQvalue[1] == "right":
+            movement_player.x += 25
+        if maxQvalue[1] == "up":
+            movement_player.y -= 25
+        if maxQvalue[1] == "down":
+            movement_player.y += 25
+
+        # updates player position
+        calculateGameState(movement_player, state)
+
+        # if it reaches the exit resets level
+        if state.level.player.colliderect(state.level.finish):
+            break
+
+        # ------------------------------------------------ to here --------------------------------

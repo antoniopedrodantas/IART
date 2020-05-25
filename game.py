@@ -3,6 +3,7 @@ import argparse
 import math
 import time
 import qlearn
+import random
 
 from sys import exit
 from copy import deepcopy
@@ -540,7 +541,9 @@ else:
 
     if args.algorithm == "qlearning":
         
-        num_episodes = 100
+        num_episodes = 250
+
+        epsilon = 0.2
 
         state = State(Level(l), "qlearning")
         cmpState = State(Level(l), "qlearning")
@@ -558,9 +561,6 @@ else:
             max_steps_per_episode = 20
             for steps in range(max_steps_per_episode):
 
-                distance = manhattanDistance(state, state.level.player, state.level.finish)
-                
-
                 pygame.time.delay(0)
 
                 # draws game state
@@ -576,70 +576,61 @@ else:
                 
                 # sees possible moves
                 possibleMoves = nextMove("qlearning", state)
-                qValues = []
-
-                # gets Q-Table values
-                for move in possibleMoves:
-                    qValues.append([qlearn.findQvalue(state, move), move])
-
-                # finds best move
-                max = -10000
-                maxQvalue = [0, ""]
-                for value in qValues:
-                    if max < value[0]:
-                        max = value[0]
-                        maxQvalue = deepcopy(value)
-
-                # calculates reward
-                #reward = 0
-                #if state.level.player.colliderect(state.level.finish):
-                    #reward = 10
-                #else:
-                    #reward = -0.1
-
-                new_distance = 0
-                x_axis = 0
-                y_axis = 0
-                if maxQvalue[1] == "left":
-                    x_axis = -25
-                elif maxQvalue[1] == "right":
-                    x_axis = 25
-                elif maxQvalue[1] == "up":
-                    y_axis = -25
-                elif maxQvalue[1] == "down":
-                    y_axis = 25
                 
-                for new_tile in state.level.floor:
-                    if (state.level.player.x + x_axis) == new_tile[0].x and (state.level.player.y + y_axis) == new_tile[0].y:
-                        new_distance = manhattanDistance(state, new_tile[0], state.level.finish)
+                
+                maxQvalue = [0, ""]
 
+                # exploration vs exploitation
+                if random.uniform(0, 1) < epsilon:
+
+                    intMove = random.randint(0, 3)
+
+                    if intMove == 0:
+                        maxQvalue = [0, "left"]
+                    elif intMove == 1:
+                        maxQvalue = [0, "right"]
+                    elif intMove == 2:
+                        maxQvalue = [0, "up"]
+                    elif intMove == 3:
+                        maxQvalue = [0, "down"]
+
+                else:
+                    qValues = []
+
+                
+
+                    # gets Q-Table values
+                    for move in possibleMoves:
+                        qValues.append([qlearn.findQvalue(state, move), move])
+
+                    # finds best move
+                    max = -10000
+                    
+                    for value in qValues:
+                        if max < value[0]:
+                            max = value[0]
+                            maxQvalue = deepcopy(value)
+
+                
                 # calculates reward
                 if maxQvalue[1] == "left":
                     if (state.level.player.x - 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
                         reward = 10
-                    elif new_distance < distance:
-                        reward = 0.1
                     else:
                         reward = -0.1
                 if maxQvalue[1] == "right":
                     if (state.level.player.x + 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
                         reward = 10
-                    elif new_distance < distance:
-                        reward = 0.1
                     else:
                         reward = -0.1
                 if maxQvalue[1] == "up":
                     if state.level.player.x == state.level.finish.x and (state.level.player.y - 25) == state.level.finish.y :
                         reward = 10
-                    elif new_distance < distance:
-                        reward = 0.1
                     else:
                         reward = -0.1
                 if maxQvalue[1] == "down":
                     if state.level.player.x == state.level.finish.x and (state.level.player.y + 25) == state.level.finish.y :
                         reward = 10
-                    elif new_distance < distance:
-                        reward = 0.1
                     else:
                         reward = -0.1
                 
@@ -670,6 +661,66 @@ else:
         print("Finished training, printing Q-Table:")
         for tile in state.level.floor:
             print((tile[0]),"--" ,tile[1], " ", tile[2], " ", tile[3], " ", tile[4])
+
+        #qlearn.showSolution(state)
+        # ------------------------------------------------ from here --------------------------------
+
+        state.level.player = cmpState.level.player
+        state.level.boxes = deepcopy (cmpState.level.boxes) 
+
+        while True:
+
+            pygame.time.delay(300)
+
+            # draws game state
+            drawGameState(state.level)
+
+            # Update the full Surface to the screen
+            pygame.display.flip()
+
+            # Run the program at 60 frames per second
+            clock.tick(60)
+
+            screen.fill((0, 0, 0))
+            
+            # sees possible moves
+            possibleMoves = ["left", "right", "up", "down"]
+            
+            
+            maxQvalue = [0, ""]
+            qValues = []
+
+            # gets Q-Table values
+            for move in possibleMoves:
+                qValues.append([qlearn.findQvalue(state, move), move])
+
+            # finds best move
+            max = -10000
+            
+            for value in qValues:
+                if max < value[0]:
+                    max = value[0]
+                    maxQvalue = deepcopy(value)
+
+            
+            movement_player = pygame.Vector2(0, 0)
+            if maxQvalue[1] == "left":
+                movement_player.x -= 25
+            if maxQvalue[1] == "right":
+                movement_player.x += 25
+            if maxQvalue[1] == "up":
+                movement_player.y -= 25
+            if maxQvalue[1] == "down":
+                movement_player.y += 25
+
+            # updates player position
+            calculateGameState(movement_player, state)
+
+            # if it reaches the exit resets level
+            if state.level.player.colliderect(state.level.finish):
+                break
+
+            # ------------------------------------------------ to here --------------------------------
 
         
 
