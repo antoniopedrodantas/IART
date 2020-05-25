@@ -110,6 +110,9 @@ class Level:
                 [pygame.Rect(300, 150, 25, 25), 0.0, 0.0, 0.0, 0.0],
                 [pygame.Rect(325, 150, 25, 25), 0.0, 0.0, 0.0, 0.0],
 
+                [pygame.Rect(100, 150, 25, 25), 0.0, 0.0, 0.0, 0.0],
+                [pygame.Rect(100, 200, 25, 25), 0.0, 0.0, 0.0, 0.0],
+
             ]
 
             self.arena = [
@@ -117,8 +120,8 @@ class Level:
                 pygame.Rect(75, 125, 25, 125),
                 pygame.Rect(350, 125, 25, 125),
                 pygame.Rect(100, 225, 250, 25),
-                pygame.Rect(100, 150, 25, 25),
-                pygame.Rect(100, 200, 25, 25)
+                #pygame.Rect(100, 150, 25, 25),
+                #pygame.Rect(100, 200, 25, 25)
             ]
 
             self.holes = []

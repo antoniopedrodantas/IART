@@ -541,7 +541,7 @@ else:
 
     if args.algorithm == "qlearning":
         
-        num_episodes = 250
+        num_episodes = 150
 
         epsilon = 0.2
 
@@ -633,6 +633,7 @@ else:
                         reward = 10
                     else:
                         reward = -0.1
+                
                 
                 # updates Q-Table
                 state = qlearn.updateQtable(state, maxQvalue[1], reward)
