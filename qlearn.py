@@ -24,7 +24,7 @@ def findQvalue(state, move):
 
 def updateQtable(state, move, reward, alpha):
 
-    gamma = 0.8
+    gamma = 0.9
     
     if move == "left":
         for tile in state.level.floor:
@@ -40,13 +40,12 @@ def updateQtable(state, move, reward, alpha):
                         futureRewards.append(next_tile[4])
                         break
 
-                max = -10000
+                maxi = -10000
                 for value in futureRewards:
-                    if max < value:
-                        max = value
+                    if maxi < value:
+                        maxi = value
 
-                tile[1] = tile[1] + alpha * (reward + gamma * max - tile[1])
-                #tile[1] = tile[1] + (reward + max)
+                tile[1] = tile[1] * (1 - alpha) + alpha * (reward + gamma * maxi)
                 return state
                 
 
@@ -64,13 +63,12 @@ def updateQtable(state, move, reward, alpha):
                         futureRewards.append(next_tile[4])
                         break
 
-                max = -10000
+                maxi = -10000
                 for value in futureRewards:
-                    if max < value:
-                        max = value
+                    if maxi < value:
+                        maxi = value
 
-                tile[2] = tile[2] + alpha * (reward + gamma * max - tile[2])
-                #tile[2] = tile[2] + (reward + max)
+                tile[2] = tile[2] * (1 - alpha) + alpha * (reward + gamma * maxi)
                 return state
                 
 
@@ -88,13 +86,12 @@ def updateQtable(state, move, reward, alpha):
                         futureRewards.append(next_tile[4])
                         break
 
-                max = -10000
+                maxi = -10000
                 for value in futureRewards:
-                    if max < value:
-                        max = value
+                    if maxi < value:
+                        maxi = value
 
-                tile[3] = tile[3] + alpha * (reward + gamma * max - tile[3])
-                #tile[3] = tile[3] + (reward + max)
+                tile[3] = tile[3] * (1 - alpha) + alpha * (reward + gamma * maxi)
                 return state
                 
 
@@ -112,13 +109,12 @@ def updateQtable(state, move, reward, alpha):
                         futureRewards.append(next_tile[4])
                         break
 
-                max = -10000
+                maxi = -10000
                 for value in futureRewards:
-                    if max < value:
-                        max = value
+                    if maxi < value:
+                        maxi = value
 
-                tile[4] = tile[4] + alpha * (reward + gamma * max - tile[4])
-                #tile[4] = tile[4] + (reward + max)
+                tile[4] = tile[4] * (1 - alpha) + alpha * (reward + gamma * maxi)
                 return state
 
     

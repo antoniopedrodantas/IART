@@ -151,6 +151,8 @@ def drawGameState(level):
     for wall in level.arena:
         pygame.draw.rect(screen, (0, 255, 0),
                          (wall.x, wall.y, wall.width, wall.height))
+    
+    
 
     # draws finish
     pygame.draw.rect(screen, pygame.Color('blue'), level.finish)
@@ -275,7 +277,7 @@ def nextMove(algorithm, state):
     # is it left?
     movement1 = pygame.Vector2(-25, 0)
     if calculateGameState(movement1, tmp1):
-        if not tmp1 == state:
+        if tmp1.level.player.x != state.level.player.x or tmp1.level.player.y != state.level.player.y:
             tmp1.addMove("left")
             possibleMoves.append(tmp1)
             pM.append("left")
@@ -283,7 +285,8 @@ def nextMove(algorithm, state):
     # is it right?
     movement2 = pygame.Vector2(25, 0)
     if calculateGameState(movement2, tmp2):
-        if not tmp2 == state:
+        #if not tmp2 == state:
+        if tmp2.level.player.x != state.level.player.x or tmp2.level.player.y != state.level.player.y:
             tmp2.addMove("right")
             possibleMoves.append(tmp2)
             pM.append("right")
@@ -291,7 +294,8 @@ def nextMove(algorithm, state):
     # is it up?
     movement3 = pygame.Vector2(0, -25)
     if calculateGameState(movement3, tmp3):
-        if not tmp3 == state:
+        #if not tmp3 == state:
+        if tmp3.level.player.x != state.level.player.x or tmp3.level.player.y != state.level.player.y:
             tmp3.addMove("up")
             possibleMoves.append(tmp3)
             pM.append("up")
@@ -299,7 +303,8 @@ def nextMove(algorithm, state):
     # is it down?
     movement4 = pygame.Vector2(0, 25)
     if calculateGameState(movement4, tmp4):
-        if not tmp4 == state:
+        #if not tmp4 == state:
+        if tmp4.level.player.x != state.level.player.x or tmp4.level.player.y != state.level.player.y:
             tmp4.addMove("down")
             possibleMoves.append(tmp4)
             pM.append("down")
@@ -541,9 +546,9 @@ else:
 
     if args.algorithm == "qlearning":
         
-        num_episodes = 150
+        num_episodes = 500
         alpha = 1
-        epsilon = 0.2
+        epsilon = 0.3
 
         lastMove = ""
 
@@ -561,21 +566,21 @@ else:
             t = 1
 
 
-            max_steps_per_episode = 20
+            max_steps_per_episode = 15
             for steps in range(max_steps_per_episode):
 
-                pygame.time.delay(0)
+                #pygame.time.delay(0)
 
                 # draws game state
-                drawGameState(state.level)
+                #drawGameState(state.level)
 
                 # Update the full Surface to the screen
-                pygame.display.flip()
+                #pygame.display.flip()
 
                 # Run the program at 60 frames per second
-                clock.tick(60)
+                #clock.tick(60)
 
-                screen.fill((0, 0, 0))
+                #screen.fill((0, 0, 0))
                 
                 # sees possible moves
                 possibleMoves = nextMove("qlearning", state)
@@ -607,40 +612,49 @@ else:
                         qValues.append([qlearn.findQvalue(state, move), move])
 
                     # finds best move
-                    max = -10000
+                    maxi = -10000
                     
                     for value in qValues:
-                        if max < value[0]:
-                            max = value[0]
+                        if maxi < value[0]:
+                            maxi = value[0]
                             maxQvalue = deepcopy(value)
+
 
                 # calculates reward
                 if maxQvalue[1] == "left":
                     if (state.level.player.x - 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
                         reward = 10
-                    elif lastMove =="rigth":
-                        reward = -50
+                    #elif lastMove =="rigth":
+                        #reward = -50
+                    elif state.level.finish.collidelist(state.level.boxes):
+                        reward = -10
                     else:
                         reward = -0.1
                 elif maxQvalue[1] == "right":
                     if (state.level.player.x + 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
                         reward = 10
-                    elif lastMove =="left":
-                        reward = -50
+                    #elif lastMove =="left":
+                        #reward = -50
+                    elif state.level.finish.collidelist(state.level.boxes):
+                        reward = -10
                     else:
                         reward = -0.1
                 elif maxQvalue[1] == "up":
                     if state.level.player.x == state.level.finish.x and (state.level.player.y - 25) == state.level.finish.y :
                         reward = 10
-                    elif lastMove =="down":
-                        reward = -50
+                    #elif lastMove =="down":
+                        #reward = -50
+                    elif state.level.finish.collidelist(state.level.boxes):
+                        reward = -10
                     else:
                         reward = -0.1
                 elif maxQvalue[1] == "down":
                     if state.level.player.x == state.level.finish.x and (state.level.player.y + 25) == state.level.finish.y :
                         reward = 10
-                    elif lastMove =="up":
-                        reward = -50
+                    #elif lastMove =="up":
+                        #reward = -50
+                    elif state.level.finish.collidelist(state.level.boxes):
+                        reward = -10
                     else:
                         reward = -0.1
                 
@@ -690,6 +704,10 @@ else:
             # draws game state
             drawGameState(state.level)
 
+            for tile in state.level.floor:
+                if tile[0].x == state.level.player.x and tile[0].y == state.level.player.y:
+                    print(tile)
+
             # Update the full Surface to the screen
             pygame.display.flip()
 
@@ -699,7 +717,7 @@ else:
             screen.fill((0, 0, 0))
             
             # sees possible moves
-            possibleMoves = ["left", "right", "up", "down"]
+            possibleMoves = nextMove("qlearning", state)
             
             
             maxQvalue = [0, ""]
@@ -712,11 +730,11 @@ else:
                 qValues.append([qlearn.findQvalue(state, move), move])
 
             # finds best move
-            max = -10000
+            maxi = -10000
             
             for value in qValues:
-                if max < value[0]:
-                    max = value[0]
+                if maxi <= value[0]:
+                    maxi = value[0]
                     maxQvalue = deepcopy(value)
 
             
