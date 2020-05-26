@@ -615,7 +615,7 @@ else:
                     maxi = -10000
                     
                     for value in qValues:
-                        if maxi < value[0]:
+                        if maxi <= value[0]:
                             maxi = value[0]
                             maxQvalue = deepcopy(value)
 
@@ -704,9 +704,9 @@ else:
             # draws game state
             drawGameState(state.level)
 
-            for tile in state.level.floor:
-                if tile[0].x == state.level.player.x and tile[0].y == state.level.player.y:
-                    print(tile)
+            #for tile in state.level.floor:
+                #if tile[0].x == state.level.player.x and tile[0].y == state.level.player.y:
+                    #print(tile)
 
             # Update the full Surface to the screen
             pygame.display.flip()
@@ -733,9 +733,15 @@ else:
             maxi = -10000
             
             for value in qValues:
-                if maxi <= value[0]:
+                if maxi < value[0]:
                     maxi = value[0]
                     maxQvalue = deepcopy(value)
+                elif maxi == value[0]:
+                    intMove = random.randint(0, 1)
+                    if intMove == 0:
+                        maxi = value[0]
+                        maxQvalue = deepcopy(value)
+
 
             
             movement_player = pygame.Vector2(0, 0)
