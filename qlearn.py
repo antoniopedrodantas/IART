@@ -192,8 +192,9 @@ class Qlearn:
                         if maxi < value:
                             maxi = value
 
-                    q_instance[1] = q_instance[1] * (1 - alpha) + alpha * (reward + gamma * maxi)
-                
+                    
+                    q_instance[1] = q_instance[1] + alpha * (reward + gamma * maxi - q_instance[1])
+
 
         elif move == "right":
             for q_instance in self.q_table:
@@ -213,7 +214,7 @@ class Qlearn:
                         if maxi < value:
                             maxi = value
 
-                    q_instance[2] = q_instance[2] * (1 - alpha) + alpha * (reward + gamma * maxi)
+                    q_instance[2] = q_instance[2] + alpha * (reward + gamma * maxi - q_instance[2])
                     
 
         elif move == "up":
@@ -234,7 +235,7 @@ class Qlearn:
                         if maxi < value:
                             maxi = value
 
-                    q_instance[3] = q_instance[3] * (1 - alpha) + alpha * (reward + gamma * maxi)
+                    q_instance[3] = q_instance[3] + alpha * (reward + gamma * maxi - q_instance[3])
                     
 
         elif move == "down":
@@ -256,7 +257,7 @@ class Qlearn:
                         if maxi < value:
                             maxi = value
 
-                    q_instance[4] = q_instance[4] * (1 - alpha) + alpha * (reward + gamma * maxi)
+                    q_instance[4] = q_instance[4] + alpha * (reward + gamma * maxi - q_instance[4])
 
 
         
