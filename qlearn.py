@@ -1,3 +1,5 @@
+import random
+
 '''
 def findQvalue(state, move):
     
@@ -122,8 +124,6 @@ def updateQtable(state, move, reward, alpha):
                 
 class Qlearn:
 
-
-
     def __init__(self):
 
         self.q_table = []
@@ -169,9 +169,10 @@ class Qlearn:
     
     
     
-    def updateQtable(self, state, move, reward, alpha):
+    def updateQtable(self, state, move, reward, alpha, algorithm, epsilon):
 
         gamma = 0.9
+        
         
         if move == "left":
             for q_instance in self.q_table:
@@ -191,6 +192,18 @@ class Qlearn:
                     for value in futureRewards:
                         if maxi < value:
                             maxi = value
+                        if maxi == value:
+                            intMove = random.randint(0, 1)
+                            if intMove == 0:
+                                maxi = value
+
+                    
+                    if algorithm == "sarsa":
+                        if len(futureRewards) > 0:
+                            mean = (futureRewards[0] + futureRewards[1] + futureRewards[2] + futureRewards[3]) / 4
+                        else:
+                            mean = 0
+                        maxi = (epsilon * mean) + ((1 - epsilon) * maxi)
 
                     
                     q_instance[1] = q_instance[1] + alpha * (reward + gamma * maxi - q_instance[1])
@@ -213,6 +226,18 @@ class Qlearn:
                     for value in futureRewards:
                         if maxi < value:
                             maxi = value
+                        if maxi == value:
+                            intMove = random.randint(0, 1)
+                            if intMove == 0:
+                                maxi = value
+
+                    
+                    if algorithm == "sarsa":
+                        if len(futureRewards) > 0:
+                            mean = (futureRewards[0] + futureRewards[1] + futureRewards[2] + futureRewards[3]) / 4
+                        else:
+                            mean = 0
+                        maxi = (0.4 * mean) + ((1 - 0.4) * maxi)
 
                     q_instance[2] = q_instance[2] + alpha * (reward + gamma * maxi - q_instance[2])
                     
@@ -234,6 +259,21 @@ class Qlearn:
                     for value in futureRewards:
                         if maxi < value:
                             maxi = value
+                        if maxi == value:
+                            intMove = random.randint(0, 1)
+                            if intMove == 0:
+                                maxi = value
+
+                    
+
+                    
+                    if algorithm == "sarsa":
+                        if len(futureRewards) > 0:
+                            mean = (futureRewards[0] + futureRewards[1] + futureRewards[2] + futureRewards[3]) / 4
+                        else:
+                            mean = 0
+                        maxi = (0.4 * mean) + ((1 - 0.4) * maxi)
+
 
                     q_instance[3] = q_instance[3] + alpha * (reward + gamma * maxi - q_instance[3])
                     
@@ -256,6 +296,18 @@ class Qlearn:
                     for value in futureRewards:
                         if maxi < value:
                             maxi = value
+                        if maxi == value:
+                            intMove = random.randint(0, 1)
+                            if intMove == 0:
+                                maxi = value
+
+                    
+                    if algorithm == "sarsa":
+                        if len(futureRewards) > 0:
+                            mean = (futureRewards[0] + futureRewards[1] + futureRewards[2] + futureRewards[3]) / 4
+                        else:
+                            mean = 0
+                        maxi = (0.4 * mean) + ((1 - 0.4) * maxi)
 
                     q_instance[4] = q_instance[4] + alpha * (reward + gamma * maxi - q_instance[4])
 
