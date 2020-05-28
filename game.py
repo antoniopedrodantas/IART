@@ -438,6 +438,7 @@ Invalid arguments!
             "-e <float>"     -> change epsilon
             "-ep <int>"      -> change nr episodes
             "-steps <int>"   -> change nr of steps per episode
+            "-rw <bool>      -> true for a change in the reward policy 
         
         Example:
         >python3 game.py ai 0 -alg qlearning -v true -alpha 1 -e 0.2 -ep 250 -steps 25
@@ -594,8 +595,10 @@ else:
           "algorithm...\nThis shouldn't take long :)\nYou can also put \"-v true\" in the comand arguments to see the search in real time at cost of some performance...\n")
     start = time.time()
 
+    # Begins project 2 (algorithms qlearning and sarsa)
     if args.algorithm == "qlearning" or args.algorithm == "sarsa":
         
+        # gets optional arguments
         if args.alpha:
             alpha = args.alpha
         
@@ -610,6 +613,7 @@ else:
 
         print("Please wait, I'm training ... ")
 
+        # initializes graph components
         graph1_x = []
         graph1_y = []
 
@@ -619,27 +623,29 @@ else:
         # last distance
         last_distance = 5000
     
-
+        #initializes state
         state = State(Level(l), args.algorithm)
         qlearn = Qlearn()
 
+
         num_steps = 0
 
+        # for every episode
         for episode in range(num_episodes):
+            
             # resets level 
-            # might need to change later
             state = State(Level(l), args.algorithm)
 
             t = 1
 
             graph2_x.append(episode)
 
-
-
+            # for every step
             for steps in range(max_steps_per_episode):
 
                 graph1_x.append(episode)
 
+                # adds inexistent state to the q-table
                 qlearn.addState(state)
 
                 if args.v:
@@ -746,9 +752,6 @@ else:
                         reward = -0.1
 
 
-                    
-                    
-
                 elif maxQvalue[1] == "right":
                     if state.level.finish.collidelist(state.level.boxes) != -1:
                         reward = -20
@@ -762,9 +765,6 @@ else:
                     else:
                         reward = -0.1
 
-                
-
-                    
 
                 elif maxQvalue[1] == "up":
                     if state.level.finish.collidelist(state.level.boxes) != -1:
@@ -780,7 +780,6 @@ else:
                         reward = -0.1
 
                     
-
                 elif maxQvalue[1] == "down":
                     if state.level.finish.collidelist(state.level.boxes) != -1:
                         reward = -20
@@ -796,10 +795,7 @@ else:
 
                     
 
-                    
-
-
-                # test
+                # this creates new states to get future reward in the q-table update
                 nextStates = []
                 stateCmp1 = deepcopy(state)
                 calculateGameState(pygame.Vector2(-25, 0), stateCmp1)
@@ -814,12 +810,11 @@ else:
                 calculateGameState(pygame.Vector2(0, 25), stateCmp4)
                 nextStates.append(stateCmp4)
 
-
                 # updates Q-Table
                 qlearn.updateQtable(state, maxQvalue[1], reward, alpha, args.algorithm, epsilon, nextStates)
                 buff = qlearn.getQentry(state)
 
-                # added here
+                # for reward policy
                 last_distance = manhattanDistance(state, state.level.player, state.level.finish)
 
 
@@ -844,11 +839,13 @@ else:
                 if state.level.player.colliderect(state.level.finish):
                     num_steps = steps
                     break
-
+                
+                # if it blocks the exit it breaks
                 if state.level.finish.collidelist(state.level.boxes) != -1:
                     num_steps = steps
                     break
-
+                
+                # this is for graph creation
                 if steps == max_steps_per_episode - 1:
                     num_steps = steps
 
@@ -859,6 +856,7 @@ else:
 
                 t += 1.0
 
+                # updates alpha
                 alpha = pow(t, -0.1)
 
             
@@ -866,7 +864,7 @@ else:
 
                     
 
-        #prints q_table
+        #prints final q_table
         for st1 in qlearn.q_table:
             print(st1[0].level.player.x, ",", st1[0].level.player.y, "\t", round(st1[1], 2), "\t", round(st1[2], 2), "\t", round(st1[3], 2), "\t", round(st1[4], 2))
 
@@ -874,8 +872,8 @@ else:
         
         state = State(Level(l), "qlearning")
 
-
-        limit = 25
+        # we limit displaying steps, in case it gets stuck
+        limit = 30
 
         for step in range(limit):
 
@@ -909,6 +907,7 @@ else:
             # finds best move
             maxi = -10000
             
+            # gets maximum reward
             for value in qValues:
                 if maxi < value[0]:
                     maxi = value[0]
@@ -938,6 +937,7 @@ else:
             # if it reaches the exit resets level
             if state.level.player.colliderect(state.level.finish):
                 break
+        
 
         i = 0
         new_graph_x = []
@@ -952,8 +952,7 @@ else:
         plt.show()
 
 
-        #plot rewards
-            # ------------------------------------------------ to here --------------------------------
+        # --------------------------------------------------- until here -----------------------------------
 
 
     

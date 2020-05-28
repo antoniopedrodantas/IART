@@ -226,7 +226,7 @@ class Qlearn:
                             maxi = (epsilon * mean) + ((1 - epsilon) * maxi)
                         else:
                             mean = 0
-                        maxi = (epsilon * mean) + ((1 - epsilon) * maxi)
+                            maxi = (epsilon * mean) + ((1 - epsilon) * maxi)
 
                     q_instance[4] = q_instance[4] + alpha * (reward + gamma * maxi - q_instance[4])
 
