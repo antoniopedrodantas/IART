@@ -479,6 +479,7 @@ parser.add_argument('-alpha', type=float,help='alpha value 0..1', required=False
 parser.add_argument('-e', type=float, help='epsilon value 0..1', required=False)
 parser.add_argument('-ep', type=int, help='Nr episodes', required=False)
 parser.add_argument('-steps', type=int, help='Nr episodes', required=False)
+parser.add_argument('-rw', type=str2bool, help='Reward policy', required=False)
 
 args = parser.parse_args()
 
@@ -614,6 +615,9 @@ else:
 
         graph2_x = []
         graph2_y = []
+
+        # last distance
+        last_distance = 5000
     
 
         state = State(Level(l), args.algorithm)
@@ -733,8 +737,14 @@ else:
                         reward = -20
                     elif (state.level.player.x - 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
                         reward = 10
+                    elif args.rw:
+                        if manhattanDistance(state, state.level.player, state.level.finish) < last_distance:
+                            reward = -0.08
+                        else:
+                            reward = -0.1
                     else:
                         reward = -0.1
+
 
                     
                     
@@ -744,8 +754,15 @@ else:
                         reward = -20
                     elif (state.level.player.x + 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
                         reward = 10
+                    elif args.rw:
+                        if manhattanDistance(state, state.level.player, state.level.finish) < last_distance:
+                            reward = -0.08
+                        else:
+                            reward = -0.1
                     else:
                         reward = -0.1
+
+                
 
                     
 
@@ -754,6 +771,11 @@ else:
                         reward = -20
                     elif state.level.player.x == state.level.finish.x and (state.level.player.y - 25) == state.level.finish.y :
                         reward = 10
+                    elif args.rw:
+                        if manhattanDistance(state, state.level.player, state.level.finish) < last_distance:
+                            reward = -0.08
+                        else:
+                            reward = -0.1
                     else:
                         reward = -0.1
 
@@ -764,8 +786,15 @@ else:
                         reward = -20
                     elif state.level.player.x == state.level.finish.x and (state.level.player.y + 25) == state.level.finish.y :
                         reward = 10
+                    elif args.rw:
+                        if manhattanDistance(state, state.level.player, state.level.finish) < last_distance:
+                            reward = -0.08
+                        else:
+                            reward = -0.1
                     else:
                         reward = -0.1
+
+                    
 
                     
 
@@ -789,6 +818,9 @@ else:
                 # updates Q-Table
                 qlearn.updateQtable(state, maxQvalue[1], reward, alpha, args.algorithm, epsilon, nextStates)
                 buff = qlearn.getQentry(state)
+
+                # added here
+                last_distance = manhattanDistance(state, state.level.player, state.level.finish)
 
 
                 movement_player = pygame.Vector2(0, 0)
