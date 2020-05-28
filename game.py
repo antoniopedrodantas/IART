@@ -4,6 +4,7 @@ import math
 import time
 #import qlearn
 import random
+from matplotlib import pyplot as plt
 
 from sys import exit
 from copy import deepcopy
@@ -503,18 +504,6 @@ max_steps_per_episode = 30
 
 # queue with nodes
 if args.algorithm == "greedy" or args.algorithm == "astar":
-
-    if args.alpha:
-        alpha = args.alpha
-        
-    if args.e:
-        epsilon = args.e
-        
-    if args.ep:
-        num_episodes = args.ep
-
-    if args.steps:
-        max_steps_per_episode = args.steps
     
     queue = Q.PriorityQueue()
     queue.put(state)
@@ -606,15 +595,28 @@ else:
 
     if args.algorithm == "qlearning" or args.algorithm == "sarsa":
         
+        if args.alpha:
+            alpha = args.alpha
+        
+        if args.e:
+            epsilon = args.e
+            
+        if args.ep:
+            num_episodes = args.ep
+
+        if args.steps:
+            max_steps_per_episode = args.steps
+
         print("Please wait, I'm training ... ")
 
+        graph1_x = []
+        graph1_y = []
     
 
         state = State(Level(l), args.algorithm)
         qlearn = Qlearn()
 
         for episode in range(num_episodes):
-           
             # resets level 
             # might need to change later
             state = State(Level(l), args.algorithm)
@@ -622,6 +624,8 @@ else:
             t = 1
 
             for steps in range(max_steps_per_episode):
+
+                graph1_x.append(episode)
 
                 qlearn.addState(state)
 
@@ -716,31 +720,27 @@ else:
 
                 # calculates reward
                 if maxQvalue[1] == "left":
-                    if state.level.finish.collidelist(state.level.boxes):
-                        reward = -10
-                    elif (state.level.player.x - 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
+                    if (state.level.player.x - 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
+                        print("found exit")
                         reward = 10
                     else:
                         reward = -0.1
                 elif maxQvalue[1] == "right":
-                    if state.level.finish.collidelist(state.level.boxes):
-                        reward = -10
-                    elif (state.level.player.x + 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
+                    if (state.level.player.x + 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
                         reward = 10
+                        print("found exit")
                     else:
                         reward = -0.1
                 elif maxQvalue[1] == "up":
-                    if state.level.finish.collidelist(state.level.boxes):
-                        reward = -10
-                    elif state.level.player.x == state.level.finish.x and (state.level.player.y - 25) == state.level.finish.y :
+                    if state.level.player.x == state.level.finish.x and (state.level.player.y - 25) == state.level.finish.y :
                         reward = 10
+                        print("found exit")
                     else:
                         reward = -0.1
                 elif maxQvalue[1] == "down":
-                    if state.level.finish.collidelist(state.level.boxes):
-                        reward = -10
-                    elif state.level.player.x == state.level.finish.x and (state.level.player.y + 25) == state.level.finish.y :
+                    if state.level.player.x == state.level.finish.x and (state.level.player.y + 25) == state.level.finish.y :
                         reward = 10
+                        print("found exit")
                     else:
                         reward = -0.1
 
@@ -763,17 +763,25 @@ else:
 
                 # updates Q-Table
                 qlearn.updateQtable(state, maxQvalue[1], reward, alpha, args.algorithm, epsilon, nextStates)
+                buff = qlearn.getQentry(state)
+
+
+                
 
                 
                 movement_player = pygame.Vector2(0, 0)
                 if maxQvalue[1] == "left":
                     movement_player.x -= 25
+                    graph1_y.append(buff[1])
                 if maxQvalue[1] == "right":
                     movement_player.x += 25
+                    graph1_y.append(buff[2])
                 if maxQvalue[1] == "up":
                     movement_player.y -= 25
+                    graph1_y.append(buff[3])
                 if maxQvalue[1] == "down":
                     movement_player.y += 25
+                    graph1_y.append(buff[4])
 
                 # updates player position
                 calculateGameState(movement_player, state)
@@ -862,13 +870,19 @@ else:
             if state.level.player.colliderect(state.level.finish):
                 break
 
+        i = 0
+        new_graph_x = []
+        for x in graph1_x:
+            i += 1
+            new_graph_x.append(i)
+        
+        plt.plot(new_graph_x, graph1_y)
+        plt.show()
+
+
+        #plot rewards
             # ------------------------------------------------ to here --------------------------------
 
-
-        
-
-
-        
 
     
     else:

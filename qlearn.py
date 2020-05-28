@@ -29,6 +29,14 @@ class Qlearn:
 
         return null
 
+    def getQentry(self, state):
+
+        for st in self.q_table:
+            if st[0].level == state.level:
+                return st
+
+        return null
+
 
     
     def findQvalue(self, state, move):
