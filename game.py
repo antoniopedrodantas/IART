@@ -341,6 +341,7 @@ def findSolution(state, algorithm):
         # sets window caption
         pygame.display.set_caption("Box World 2")
 
+
     while run2:
 
         if algorithm == "idfs" and len(queue) == 0:
@@ -362,6 +363,7 @@ def findSolution(state, algorithm):
 
         if args.v:
             # draws game state
+        
             drawGameState(state.level)
 
             # Update the full Surface to the screen
@@ -385,16 +387,18 @@ def findSolution(state, algorithm):
 def usage():
     print("""
 Invalid arguments!
-        
+
     Usage if you wish to play a level:
-        > python3 game.py human <level>
-        (where:
-            <level> is a integer from 0 to 5)
+    > python3 game.py human <level>
+    (where:
+        <level> is a integer from 0 to 5)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PROJECT 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     
         
     Usage if you wish the AI to solve a level:
         > python3 game.py ai <level> -al <algorithm> -v <bool>
         (where:
-            <level> ia a integer from 0 to 5
+            <level> a integer from 0 to 5
             <algorithm> is one of the folowing algorithms:
                 - "bfs" -> breadth.first search
                 - "dfs" -> depth-first search
@@ -405,7 +409,42 @@ Invalid arguments!
                     this shows in which node the algorithm is
                     in real time but it is very costly performance wise.
                     Use it only in the lower levels that are quick to solve)
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PROJECT 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    Usage if you wish the AI to solve a level with reinforcement learning:
+        > python3 game.py ai <level> -alg <algorithm> -v <bool>
+        (where:
+            <level> a integer from 0 to 5
+            <algorithm> is one of the folowing algorithms:
+                - "qlearning"
+                - "sarsa" 
+            <bool> is a boolean (1, true, 0, false,)
+                    this shows agent training in real time
+                    but it is very costly performance-wise.
+                    Use it only in the lower levels that are quick to solve)
+        
+        If you leave the command as showed above, the default values will be:
+            alpha = 1
+            epsilon = 0.3
+            number of episodes = 500
+            max steps per episode = 30
+
+        If you wish to change this values you can use these optional flags
+            "-alpha <float>" -> change alpha
+            "-e <float>"     -> change epsilon
+            "-ep <int>"      -> change nr episodes
+            "-steps <int>"   -> change nr of steps per episode
+        
+        Example:
+        >python3 game.py ai 0 -alg qlearning -v true -alpha 1 -e 0.2 -ep 250 -steps 25
+
+
+
             """
+
           )
 
 
@@ -429,19 +468,21 @@ screen = pygame.display.set_mode((500, 500))
 clock = pygame.time.Clock()
 
 # gets the level
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(usage=usage())
 parser.add_argument('mode', type=str, help='human/player')
 parser.add_argument('level', type=int, help='Game level')
 parser.add_argument('-algorithm', type=str,
                     help='Game algorithm', required=False)
 parser.add_argument('-v', type=str2bool, required=False)
+parser.add_argument('-alpha', type=float,help='alpha value 0..1', required=False)
+parser.add_argument('-e', type=float, help='epsilon value 0..1', required=False)
+parser.add_argument('-ep', type=int, help='Nr episodes', required=False)
+parser.add_argument('-steps', type=int, help='Nr episodes', required=False)
 
 args = parser.parse_args()
 
 
-if not (args.mode == "human" or args.mode == "ai"):
-    usage()
-    exit()
+
 
 
 l = args.level
@@ -455,8 +496,26 @@ visited = []
 # current game state
 state = State(level, args.algorithm)
 
+alpha = 1
+epsilon = 0.3
+num_episodes = 500
+max_steps_per_episode = 30
+
 # queue with nodes
 if args.algorithm == "greedy" or args.algorithm == "astar":
+
+    if args.alpha:
+        alpha = args.alpha
+        
+    if args.e:
+        epsilon = args.e
+        
+    if args.ep:
+        num_episodes = args.ep
+
+    if args.steps:
+        max_steps_per_episode = args.steps
+    
     queue = Q.PriorityQueue()
     queue.put(state)
 else:
@@ -549,9 +608,7 @@ else:
         
         print("Please wait, I'm training ... ")
 
-        num_episodes = 2500
-        alpha = 1
-        epsilon = 0.3
+    
 
         state = State(Level(l), args.algorithm)
         qlearn = Qlearn()
@@ -563,24 +620,24 @@ else:
             state = State(Level(l), args.algorithm)
 
             t = 1
-            max_steps_per_episode = 15
 
             for steps in range(max_steps_per_episode):
 
                 qlearn.addState(state)
 
-                #pygame.time.delay(0)
+                if args.v:
+                    pygame.time.delay(0)
 
-                # draws game state
-                #drawGameState(state.level)
+                    # draws game state
+                    drawGameState(state.level)
 
-                # Update the full Surface to the screen
-                #pygame.display.flip()
+                    # Update the full Surface to the screen
+                    pygame.display.flip()
 
-                # Run the program at 60 frames per second
-                #clock.tick(60)
+                    # Run the program at 60 frames per second
+                    clock.tick(60)
 
-                #screen.fill((0, 0, 0))
+                    screen.fill((0, 0, 0))
                 
                 # sees possible moves
                 possibleMoves = nextMove("qlearning", state)
@@ -729,6 +786,7 @@ else:
 
         for step in range(limit):
 
+            
             pygame.time.delay(300)
 
             # draws game state
