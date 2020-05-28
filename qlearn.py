@@ -77,15 +77,7 @@ class Qlearn:
 
                     # calculates future reward
                     futureRewards = []
-                    '''
-                    for next_state in self.q_table:
-                        if (state.level.player.x - 25) == next_state[0].level.player.x and state.level.player.y == next_state[0].level.player.y:
-                            futureRewards.append(next_state[1])
-                            futureRewards.append(next_state[2])
-                            futureRewards.append(next_state[3])
-                            futureRewards.append(next_state[4])
-                            break
-                    '''
+                    
                     for next_state in self.q_table:
                         tmp = self.getState(nextStates[0])
                         if tmp.level == next_state[0].level:
@@ -125,15 +117,7 @@ class Qlearn:
                 if state.level == q_instance[0].level and state.level == q_instance[0].level:
                     # calculates future reward
                     futureRewards = []
-                    '''
-                    for next_state in self.q_table:
-                        if (state.level.player.x + 25) == next_state[0].level.player.x and state.level.player.y == next_state[0].level.player.y:
-                            futureRewards.append(next_state[1])
-                            futureRewards.append(next_state[2])
-                            futureRewards.append(next_state[3])
-                            futureRewards.append(next_state[4])
-                            break
-                    '''
+                    
                     for next_state in self.q_table:
                         tmp = self.getState(nextStates[1])
                         if tmp.level == next_state[0].level:
@@ -172,15 +156,7 @@ class Qlearn:
                 if state.level == q_instance[0].level and state.level == q_instance[0].level:
                     # calculates future reward
                     futureRewards = []
-                    '''
-                    for next_state in self.q_table:
-                        if state.level.player.x == next_state[0].level.player.x and (state.level.player.y - 25) == next_state[0].level.player.y:
-                            futureRewards.append(next_state[1])
-                            futureRewards.append(next_state[2])
-                            futureRewards.append(next_state[3])
-                            futureRewards.append(next_state[4])
-                            break
-                    '''
+                    
                     for next_state in self.q_table:
                         tmp = self.getState(nextStates[2])
                         if tmp.level == next_state[0].level:
@@ -221,15 +197,7 @@ class Qlearn:
 
                     # calculates future reward
                     futureRewards = []
-                    '''
-                    for next_state in self.q_table:
-                        if state.level.player.x == next_state[0].level.player.x and (state.level.player.y + 25) == next_state[0].level.player.y:
-                            futureRewards.append(next_state[1])
-                            futureRewards.append(next_state[2])
-                            futureRewards.append(next_state[3])
-                            futureRewards.append(next_state[4])
-                            break
-                    '''
+                    
                     for next_state in self.q_table:
                         tmp = self.getState(nextStates[3])
                         if tmp.level == next_state[0].level:

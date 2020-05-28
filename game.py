@@ -611,10 +611,15 @@ else:
 
         graph1_x = []
         graph1_y = []
+
+        graph2_x = []
+        graph2_y = []
     
 
         state = State(Level(l), args.algorithm)
         qlearn = Qlearn()
+
+        num_steps = 0
 
         for episode in range(num_episodes):
             # resets level 
@@ -622,6 +627,10 @@ else:
             state = State(Level(l), args.algorithm)
 
             t = 1
+
+            graph2_x.append(episode)
+
+
 
             for steps in range(max_steps_per_episode):
 
@@ -720,29 +729,51 @@ else:
 
                 # calculates reward
                 if maxQvalue[1] == "left":
-                    if (state.level.player.x - 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
-                        print("found exit")
+                    if state.level.finish.collidelist(state.level.boxes) != -1:
+                        reward = -20
+                    elif (state.level.player.x - 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
                         reward = 10
                     else:
                         reward = -0.1
+
+                    
+                    
+
                 elif maxQvalue[1] == "right":
-                    if (state.level.player.x + 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
+                    if state.level.finish.collidelist(state.level.boxes) != -1:
+                        print("bruh")
+                        reward = -20
+                    elif (state.level.player.x + 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
                         reward = 10
                         print("found exit")
                     else:
                         reward = -0.1
+
+                    
+
                 elif maxQvalue[1] == "up":
-                    if state.level.player.x == state.level.finish.x and (state.level.player.y - 25) == state.level.finish.y :
+                    if state.level.finish.collidelist(state.level.boxes) != -1:
+                        print("bruh")
+                        reward = -20
+                    elif state.level.player.x == state.level.finish.x and (state.level.player.y - 25) == state.level.finish.y :
                         reward = 10
                         print("found exit")
                     else:
                         reward = -0.1
+
+                    
+
                 elif maxQvalue[1] == "down":
-                    if state.level.player.x == state.level.finish.x and (state.level.player.y + 25) == state.level.finish.y :
+                    if state.level.finish.collidelist(state.level.boxes) != -1:
+                        print("bruh")
+                        reward = -20
+                    elif state.level.player.x == state.level.finish.x and (state.level.player.y + 25) == state.level.finish.y :
                         reward = 10
                         print("found exit")
                     else:
                         reward = -0.1
+
+                    
 
 
                 # test
@@ -788,10 +819,27 @@ else:
 
                 # if it reaches the exit resets level
                 if state.level.player.colliderect(state.level.finish):
+                    num_steps = steps
                     break
+
+                if state.level.finish.collidelist(state.level.boxes) != -1:
+                    num_steps = steps
+                    break
+
+                if steps == max_steps_per_episode - 1:
+                    num_steps = steps
+
+                
+                
+
+
+
                 t += 1.0
 
                 alpha = pow(t, -0.1)
+
+            
+            graph2_y.append(num_steps)
 
                     
 
@@ -876,7 +924,10 @@ else:
             i += 1
             new_graph_x.append(i)
         
+
+        # draws graphs
         plt.plot(new_graph_x, graph1_y)
+        #plt.plot(graph2_x, graph2_y)
         plt.show()
 
 

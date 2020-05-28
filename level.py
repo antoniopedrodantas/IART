@@ -63,14 +63,14 @@ class Level:
             self.player = pygame.Rect(125, 225, 25, 25)
 
             self.boxes = [
-                #pygame.Rect(125, 150, 25, 25),
-                pygame.Rect(150, 175, 25, 25),
-                pygame.Rect(100, 175, 25, 25),
+                pygame.Rect(125, 100, 25, 25),
+                #pygame.Rect(150, 175, 25, 25),
+                #pygame.Rect(100, 175, 25, 25),
             ]
 
             self.iceBoxes = [
-                #pygame.Rect(150, 200, 25, 25),
-                #pygame.Rect(100, 200, 25, 25),
+                pygame.Rect(150, 200, 25, 25),
+                pygame.Rect(100, 200, 25, 25),
             ]
 
             self.floor = [
@@ -85,17 +85,17 @@ class Level:
                 pygame.Rect(175, 75, 25, 200),
                 pygame.Rect(75, 50, 125, 25),
 
-                pygame.Rect(125, 150, 25, 25),
+                #pygame.Rect(125, 150, 25, 25),
             ]
 
             self.holes = [
-                #pygame.Rect(150, 150, 25, 25),
-                #pygame.Rect(100, 150, 25, 25),
+                pygame.Rect(150, 100, 25, 25),
+                pygame.Rect(100, 100, 25, 25),
             ]
 
             self.finish = pygame.Rect(125, 75, 25, 25)
             '''
-
+            
             self.player = pygame.Rect(100, 175, 25, 25)
 
             self.boxes = [
@@ -145,6 +145,7 @@ class Level:
             ]
 
             self.finish = pygame.Rect(150, 200, 25, 25)
+            
 
 
         # ======================================= LEVEL 2 =======================================
