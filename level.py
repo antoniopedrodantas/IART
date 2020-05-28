@@ -106,8 +106,10 @@ class Level:
             self.iceBoxes = []
 
             self.floor = [
-
-
+                pygame.Rect(100, 175, 100, 25),
+                pygame.Rect(100, 150, 100, 25),
+                pygame.Rect(100, 125, 100, 25),
+                pygame.Rect(100, 100, 100, 25),
             ]
 
             self.arena = [
