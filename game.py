@@ -716,37 +716,53 @@ else:
 
                 # calculates reward
                 if maxQvalue[1] == "left":
-                    if (state.level.player.x - 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
-                        reward = 10
-                    elif state.level.finish.collidelist(state.level.boxes):
+                    if state.level.finish.collidelist(state.level.boxes):
                         reward = -10
+                    elif (state.level.player.x - 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
+                        reward = 10
                     else:
                         reward = -0.1
                 elif maxQvalue[1] == "right":
-                    if (state.level.player.x + 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
-                        reward = 10
-                    elif state.level.finish.collidelist(state.level.boxes):
+                    if state.level.finish.collidelist(state.level.boxes):
                         reward = -10
+                    elif (state.level.player.x + 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
+                        reward = 10
                     else:
                         reward = -0.1
                 elif maxQvalue[1] == "up":
-                    if state.level.player.x == state.level.finish.x and (state.level.player.y - 25) == state.level.finish.y :
-                        reward = 10
-                    elif state.level.finish.collidelist(state.level.boxes):
+                    if state.level.finish.collidelist(state.level.boxes):
                         reward = -10
+                    elif state.level.player.x == state.level.finish.x and (state.level.player.y - 25) == state.level.finish.y :
+                        reward = 10
                     else:
                         reward = -0.1
                 elif maxQvalue[1] == "down":
-                    if state.level.player.x == state.level.finish.x and (state.level.player.y + 25) == state.level.finish.y :
-                        reward = 10
-                    elif state.level.finish.collidelist(state.level.boxes):
+                    if state.level.finish.collidelist(state.level.boxes):
                         reward = -10
+                    elif state.level.player.x == state.level.finish.x and (state.level.player.y + 25) == state.level.finish.y :
+                        reward = 10
                     else:
                         reward = -0.1
 
 
+                # test
+                nextStates = []
+                stateCmp1 = deepcopy(state)
+                calculateGameState(pygame.Vector2(-25, 0), stateCmp1)
+                nextStates.append(stateCmp1)
+                stateCmp2 = deepcopy(state)
+                calculateGameState(pygame.Vector2(25, 0), stateCmp2)
+                nextStates.append(stateCmp2)
+                stateCmp3 = deepcopy(state)
+                calculateGameState(pygame.Vector2(0, -25), stateCmp3)
+                nextStates.append(stateCmp3)
+                stateCmp4 = deepcopy(state)
+                calculateGameState(pygame.Vector2(0, 25), stateCmp4)
+                nextStates.append(stateCmp4)
+
+
                 # updates Q-Table
-                qlearn.updateQtable(state, maxQvalue[1], reward, alpha, args.algorithm, epsilon)
+                qlearn.updateQtable(state, maxQvalue[1], reward, alpha, args.algorithm, epsilon, nextStates)
 
                 
                 movement_player = pygame.Vector2(0, 0)
