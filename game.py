@@ -741,11 +741,9 @@ else:
 
                 elif maxQvalue[1] == "right":
                     if state.level.finish.collidelist(state.level.boxes) != -1:
-                        print("bruh")
                         reward = -20
                     elif (state.level.player.x + 25) == state.level.finish.x and state.level.player.y == state.level.finish.y :
                         reward = 10
-                        print("found exit")
                     else:
                         reward = -0.1
 
@@ -753,11 +751,9 @@ else:
 
                 elif maxQvalue[1] == "up":
                     if state.level.finish.collidelist(state.level.boxes) != -1:
-                        print("bruh")
                         reward = -20
                     elif state.level.player.x == state.level.finish.x and (state.level.player.y - 25) == state.level.finish.y :
                         reward = 10
-                        print("found exit")
                     else:
                         reward = -0.1
 
@@ -765,11 +761,9 @@ else:
 
                 elif maxQvalue[1] == "down":
                     if state.level.finish.collidelist(state.level.boxes) != -1:
-                        print("bruh")
                         reward = -20
                     elif state.level.player.x == state.level.finish.x and (state.level.player.y + 25) == state.level.finish.y :
                         reward = 10
-                        print("found exit")
                     else:
                         reward = -0.1
 
@@ -797,9 +791,6 @@ else:
                 buff = qlearn.getQentry(state)
 
 
-                
-
-                
                 movement_player = pygame.Vector2(0, 0)
                 if maxQvalue[1] == "left":
                     movement_player.x -= 25
@@ -843,14 +834,12 @@ else:
 
                     
 
-        #pritns q_table
+        #prints q_table
         for st1 in qlearn.q_table:
-            print(st1[0].level.player.x, ",", st1[0].level.player.y, "\t", st1[1], "\t", st1[2], "\t", st1[3], "\t", st1[4])
+            print(st1[0].level.player.x, ",", st1[0].level.player.y, "\t", round(st1[1], 2), "\t", round(st1[2], 2), "\t", round(st1[3], 2), "\t", round(st1[4], 2))
 
         # ------------------------------------------------ from here we print the solution --------------------------------
         
-        #state.level.player = cmpState.level.player
-        #state.level.boxes = deepcopy (cmpState.level.boxes)
         state = State(Level(l), "qlearning")
 
 
@@ -898,7 +887,7 @@ else:
                         maxi = value[0]
                         maxQvalue = deepcopy(value)
 
-            print(maxQvalue)
+            print("[", round(maxQvalue[0], 2), ", ", maxQvalue[1], "]")
 
             
             movement_player = pygame.Vector2(0, 0)
