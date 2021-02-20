@@ -9,9 +9,9 @@ from matplotlib import pyplot as plt
 from sys import exit
 from copy import deepcopy
 
-from level import *
-from state import *
-from qlearn import *
+from src.level import *
+from src.state import *
+from src.qlearn import *
 
 try:
     import Queue as Q  # ver. < 3.0
