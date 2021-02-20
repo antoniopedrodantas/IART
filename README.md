@@ -6,10 +6,11 @@ Our project consists in replicating the famous Box Word 2 game, as well as devel
 
 ## What do you need?
 
-To successfully run our game you will need Python v.3 or above, as well as the pygame library.
-You can easily install these two components here:
+To successfully run our game you will need Python v.3 or above, as well as the pygame and the matplot library.
+You can easily install these three components here:
 * [Python](https://www.python.org/)
 * [pygame](https://realpython.com/pygame-a-primer/#background-and-setup)
+* [matplotlib](https://matplotlib.org/stable/users/installing.html)
 
 ## How to run it?
 
