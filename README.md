@@ -2,6 +2,8 @@
 
 Our project consists in replicating the famous Box Word 2 game, as well as developing an AI that can easily beat it. The game consists in a series of puzzles, where the player has to reach the exit of the stage in order to advance to the next level. Various obstacles are placed around, making the goal harder than it seems at first sight. At some stages, there are holes, which can be filled with the boxes placed around. There are several types of boxes - the orange and green are normal ones, which can be pushed around. The grey boxes, called Ice Boxes, when pushed will slide away if there is no wall, hole or another box to stop them. If the player gets stuck, he can retry the level.
 
+![box world printscreen](https://i.imgur.com/5lfnGf7.png)
+
 ## What do you need?
 
 To successfully run our game you will need Python v.3 or above, as well as the pygame library.
